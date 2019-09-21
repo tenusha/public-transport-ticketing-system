@@ -105,10 +105,12 @@ router.get('/railway/reservations/trains/:train/class/:trainClass/date/:date/tim
         const date = req.params.date
         const time = req.params.time
         const result = await reservationModel.find({ train: train, trainClass: trainClass, date: date, time: time })
+        var bookings = 0
+        result.map(item => bookings += item.qty)
         if (result.length <= 0) {
             res.status(200).json({ bookings: 0 })
         } else {
-            res.status(200).json({ bookings: result.length })
+            res.status(200).json({ bookings })
         }
     } catch (err) {
         res.status(500).json(err)

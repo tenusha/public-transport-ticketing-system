@@ -62,6 +62,10 @@ export function contact(body) {
     return callPost(baseUrl + '/railway/contact', body);
 }
 
+export function getBookedSeatsCount(train, trainClass, date, time) {
+    return callGet(baseUrl + "/railway/reservations/trains/" + train + "/class/" + trainClass + "/date/" + date + "/time/" + time);
+}
+
 const callGet = (url) => {
     return fetch(url).then(handleres);
 }
@@ -70,7 +74,7 @@ const callPost = (url, body) => {
     return fetch(url, {
         method: 'POST',
         body: JSON.stringify(body),
-        headers: { "Content-Type": "application/json" }
+        headers: {"Content-Type": "application/json"}
     }).then(handleres);
 }
 
@@ -78,7 +82,7 @@ const callPut = (url, body) => {
     return fetch(url, {
         method: 'PUT',
         body: JSON.stringify(body),
-        headers: { "Content-Type": "application/json" }
+        headers: {"Content-Type": "application/json"}
     }).then(handleres);
 }
 
@@ -91,8 +95,7 @@ const callDelete = (url) => {
 const handleres = (res) => {
     if (res.ok) {
         return res.json();
-    }
-    else {
+    } else {
         if (res.status === 404) {
             return Promise.reject();
         } else {

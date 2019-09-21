@@ -10,7 +10,7 @@ const trainSchema = mongoose.Schema({
         required: true,
     },
     class:{
-        type: Object,
+        type: Array,
         required: true
     }
 })
