@@ -68,7 +68,11 @@ class Home extends Component {
                 .then(res => {
                     var options = [];
                     res.route.map((station, i) => {
-                        return options.push({ value: station.name, label: station.name, route: res._id, id: i, fair: station.fair })
+						if(selectedOption.value !== station.name){
+							return options.push({ value: station.name, label: station.name, route: res._id, id: i, fair: station.fair })
+						}else{
+							return null
+						}
                     })
                     this.setState({ toOptions: options })
                 })

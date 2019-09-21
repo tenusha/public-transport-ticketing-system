@@ -98,6 +98,23 @@ router.get('/railway/reservations/:user', async (req, res) => {
     }
 });
 
+router.get('/railway/reservations/trains/:train/class/:trainClass/date/:date/time/:time', async (req, res) => {
+    try {
+        const train = req.params.train
+        const trainClass = req.params.trainClass
+        const date = req.params.date
+        const time = req.params.time
+        const result = await reservationModel.find({ train: train, trainClass: trainClass, date: date, time: time })
+        if (result.length <= 0) {
+            res.status(200).json({ bookings: 0 })
+        } else {
+            res.status(200).json({ bookings: result.length })
+        }
+    } catch (err) {
+        res.status(500).json(err)
+    }
+});
+
 router.delete('/railway/reservations/:id', async (req, res) => {
     try {
         const result = await reservationModel.deleteOne({ _id: req.params.id }).exec()

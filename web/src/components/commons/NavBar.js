@@ -38,9 +38,9 @@ class NavBar extends Component {
                     </Navbar.Collapse>
                 </Navbar>
 
-                <Row style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                    <div >
-                        <Image src={require("../../images/railway.png")} />
+                <Row style={{ alignItems: 'center', justifyContent: 'center', width: '100%', margin:0 }}>
+                    <div style={{ width: '100%' }}>
+                        <Image style={{ width: '100%' }} src={require("../../images/railway2.jpg")} />
                     </div>
                 </Row>
 

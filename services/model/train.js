@@ -8,6 +8,10 @@ const trainSchema = mongoose.Schema({
     route: {
         type: String,
         required: true,
+    },
+    class:{
+        type: Object,
+        required: true
     }
 })
 
