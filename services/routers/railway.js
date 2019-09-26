@@ -67,12 +67,12 @@ router.post('/railway/reservations', async (req, res) => {
         const body = req.body
         var reservation = new reservationModel(body)
         var result = await reservation.save()
-        if (body.phone) {
-            client.sendTextMessage({ ...body, reservationID: result._id })
-        } else if (body.card) {
-            const html = '<h2><u>Reservation Slip</u></h2><p>Reference No : <b> ' + result._id + ' </b><br><br>From <b> ' + body.from + ' </b> to <b> ' + body.to + ' </b><br>' + 'Date :<b> ' + body.date + ' </b> Time :<b> ' + body.time + ' </b><br>Train : <b>' + body.train + ' </b> Class: <b> ' + body.trainClass + ' </b><br>Quantity : <b> ' + body.qty + ' </b></p><p>Total : <b> ' + body.total + ' LKR</b></p> '
-            client.sendEmail({ ...body, html: html, subject: 'Railway e-Ticket' })
-        }
+        // if (body.phone) {
+        //     client.sendTextMessage({ ...body, reservationID: result._id })
+        // } else if (body.card) {
+        const html = '<h2><u>Reservation Slip</u></h2><p>Reference No : <b> ' + result._id + ' </b><br><br>From <b> ' + body.from + ' </b> to <b> ' + body.to + ' </b><br>' + 'Date :<b> ' + body.date + ' </b> Time :<b> ' + body.time + ' </b><br>Train : <b>' + body.train + ' </b> Class: <b> ' + body.trainClass + ' </b><br>Quantity : <b> ' + body.qty + ' </b></p><p>Total : <b> ' + body.total + ' LKR</b></p> '
+        client.sendEmail({ ...body, html: html, subject: 'Railway e-Ticket' })
+        // }
         res.status(200).json(result)
     }
     catch (err) {
@@ -89,7 +89,7 @@ router.get('/railway/reservations', async (req, res) => {
     }
 });
 
-router.get('/railway/reservations/:user', async (req, res) => {
+router.get('/railway/users/:user/reservations', async (req, res) => {
     try {
         const result = await reservationModel.find({ user: req.params.user })
         res.status(200).json(result)
@@ -112,6 +112,15 @@ router.get('/railway/reservations/trains/:train/class/:trainClass/date/:date/tim
         } else {
             res.status(200).json({ bookings })
         }
+    } catch (err) {
+        res.status(500).json(err)
+    }
+});
+
+router.get('/railway/reservations/:id', async (req, res) => {
+    try {
+        const result = await reservationModel.findOne({ _id: req.params.id }).exec()
+        res.status(200).json(result)
     } catch (err) {
         res.status(500).json(err)
     }
