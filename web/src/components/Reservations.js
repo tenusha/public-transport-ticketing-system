@@ -3,6 +3,9 @@ import React, { Component } from 'react';
 import { Row, Col, Button, Card, Pagination } from 'react-bootstrap'
 import { getReservations, deleteReservation } from '../Services'
 import { toast } from 'react-toastify'
+import configs from '../config.json'
+
+var QRCode = require('qrcode.react')
 
 class Reservations extends Component {
 
@@ -65,26 +68,39 @@ class Reservations extends Component {
         for (let number = offset; number < offset + 5; number++) {
             const reservation = this.state.reservations[number]
             if (reservation) {
+
+                var tempDate = new Date(reservation.date)
+                var bookingDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate(), reservation.time.slice(0, 2), reservation.time.slice(3, 5), 0, 0)
+                bookingDate.setHours(bookingDate.getHours() - 12)
+                const disabled = bookingDate < new Date()
+
+                const url = configs.frontendURL + "/ticket/" + reservation._id
+
                 items.push(
                     <Row style={{ width: '75%' }} key={number}>
                         <Col>
                             <Card style={{ padding: 10, marginTop: 10 }}>
                                 <Row>
                                     <Col>Reference No : {reservation._id}</Col>
+                                    <Col align='right'>{reservation.date} {reservation.time}</Col>
                                 </Row>
                                 <hr />
                                 <Row>
-                                    <Col>From <b>{reservation.from}</b> to <b>{reservation.to}</b></Col>
-                                    <Col align='right'>{reservation.date} {reservation.time}</Col>
-                                </Row>
-                                <Row>
-                                    <Col>Train : {reservation.train}</Col>
-                                </Row>
-                                <Row>
-                                    <Col>Class : {reservation.trainClass}</Col>
-                                </Row>
-                                <Row>
-                                    <Col>Quantity : {reservation.qty}</Col>
+                                    <Col>
+                                        <Row>
+                                            <Col>From <b>{reservation.from}</b> to <b>{reservation.to}</b></Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>Train : {reservation.train}</Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>Class : {reservation.trainClass}</Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>Quantity : {reservation.qty}</Col>
+                                        </Row>
+                                    </Col>
+                                    <Col align='right'><QRCode value={url} /></Col>
                                 </Row>
                                 <hr />
                                 <Row>
@@ -94,7 +110,7 @@ class Reservations extends Component {
                                 </Row>
                                 <Row>
                                     <Col style={{ paddingTop: 10 }} align='right'>
-                                        <Button variant="danger" size="sm" onClick={() => this.cancelReservation(reservation._id)}>Cancel</Button>
+                                        <Button disabled={disabled} variant="danger" size="sm" onClick={() => this.cancelReservation(reservation._id)}>Cancel</Button>
                                     </Col>
                                 </Row>
                             </Card>

@@ -47,7 +47,11 @@ export function makeReservation(body) {
 }
 
 export function getReservations(user) {
-    return callGet(baseUrl + '/railway/reservations/' + user);
+    return callGet(baseUrl + '/railway/users/' + user + '/reservations/');
+}
+
+export function getReservation(rid) {
+    return callGet(baseUrl + '/railway/reservations/' + rid);
 }
 
 export function deleteReservation(id) {
@@ -60,6 +64,10 @@ export function updateAccount(body, id) {
 
 export function contact(body) {
     return callPost(baseUrl + '/railway/contact', body);
+}
+
+export function getBookedSeatsCount(train, trainClass, date, time) {
+    return callGet(baseUrl + "/railway/reservations/trains/" + train + "/class/" + trainClass + "/date/" + date + "/time/" + time);
 }
 
 const callGet = (url) => {
@@ -91,8 +99,7 @@ const callDelete = (url) => {
 const handleres = (res) => {
     if (res.ok) {
         return res.json();
-    }
-    else {
+    } else {
         if (res.status === 404) {
             return Promise.reject();
         } else {
