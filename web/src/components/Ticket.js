@@ -42,6 +42,9 @@ class Ticket extends Component {
                                     <Col>Quantity : {reservation.qty}</Col>
                                 </Row>
                                 <hr />
+								<Row>
+                                    <Col>Payment Method : <b>{reservation.paymentMethod}</b></Col>
+                                </Row>
                                 <Row>
                                     <Col>Amount : {reservation.amount.toFixed(2)}</Col>
                                     <Col>Discount : {reservation.discount.toFixed(2)}</Col>
