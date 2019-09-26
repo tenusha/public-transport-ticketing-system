@@ -15,8 +15,16 @@ router.post('/payment/card', (req, res) => {
             } else if (!val) {
                 res.status(200).json({ validated: false })
             } else {
-                console.log(req.body.total + " paid")
-                res.status(200).json({ validated: true })
+            	if(val.amount >= req.body.total) {
+            		console.log(req.body.total + " paid")
+            		var cm = new CardModel()
+            		const newAmt = val.amount - req.body.total
+            		cm = {...val, amount: newAmt } 
+            		cm.save()
+            		res.status(200).json({ validated: true })
+            	} else {
+            		res.status(200).json({ validated: false })
+            	}
             }
         });
     } catch (err) {

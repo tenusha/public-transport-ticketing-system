@@ -35,23 +35,27 @@ class Register extends Component {
 
         if (form.checkValidity() === true) {
             var body = { ...this.state, password: getHash(this.state.password) }
-            register(body)
-                .then(res => {
-                    toast.success("Account Created Please Sign In")
-                    this.loginClick()
-                })
-                .catch(err => {
-                    if (err.then && typeof err.then === 'function') {
-                        err.then(e => {
-                            toast.error("Unable to register the new user")
-                            if (e.exist) {
-                                this.setState({ modalShowErr: true })
-                            }
-                        })
-                    } else {
-                        console.log(err)
-                    }
-                })
+            if (this.state.password !== this.state.cPassword) {
+                toast.error("Password doesn't match !")
+            } else {
+                register(body)
+                    .then(res => {
+                        toast.success("Account created, Please confirm your email !")
+                        this.loginClick()
+                    })
+                    .catch(err => {
+                        if (err.then && typeof err.then === 'function') {
+                            err.then(e => {
+                                toast.error("Unable to register the new user")
+                                if (e.exist) {
+                                    this.setState({ modalShowErr: true })
+                                }
+                            })
+                        } else {
+                            console.log(err)
+                        }
+                    })
+            }
         }
         // this.setState({ validated: true }) 
         event.preventDefault()
@@ -101,6 +105,10 @@ class Register extends Component {
                         <Form.Group controlId="formBasicPassword">
                             <Form.Label>Password</Form.Label>
                             <Form.Control required type="password" placeholder="Enter Password" onChange={this.handleChange('password')} />
+                        </Form.Group>
+                        <Form.Group controlId="formBasicCoPassword">
+                            <Form.Label>Confirm Password</Form.Label>
+                            <Form.Control required type="password" placeholder="Confirm Password" onChange={this.handleChange('cPassword')} />
                         </Form.Group>
                         {this.state.modalShowErr && <p style={{ color: 'red' }}>{this.state.modalErrMsg}</p>}
                         <Button variant="primary" type="submit" block>

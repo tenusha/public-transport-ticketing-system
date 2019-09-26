@@ -97,8 +97,8 @@ db.schedules.insert({time:"07.00 pm"});
 db.schedules.insert({time:"11.00 pm"});
 
 
-db.cards.insert({card:"1234123412341234", cvc:"123" ,exp:"12/12"});
-db.cards.insert({card:"1111111111111111", cvc:"111" ,exp:"11/11"});
+db.cards.insert({card:"1234123412341234", cvc:"123" ,exp:"12/12", amount:10000.00});
+db.cards.insert({card:"1111111111111111", cvc:"111" ,exp:"11/11", amount:10000.00});
 
 
 
