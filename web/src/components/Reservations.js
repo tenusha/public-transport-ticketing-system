@@ -65,6 +65,10 @@ class Reservations extends Component {
         for (let number = offset; number < offset + 5; number++) {
             const reservation = this.state.reservations[number]
             if (reservation) {
+                var tempDate = new Date(reservation.date)
+                var bookingDate = new Date(tempDate.getFullYear(), tempDate.getMonth(), tempDate.getDate(), reservation.time.slice(0, 2), reservation.time.slice(3, 5), 0, 0)
+                bookingDate.setHours(bookingDate.getHours() - 12)
+                const disabled = bookingDate < new Date()
                 items.push(
                     <Row style={{ width: '75%' }} key={number}>
                         <Col>
@@ -94,7 +98,7 @@ class Reservations extends Component {
                                 </Row>
                                 <Row>
                                     <Col style={{ paddingTop: 10 }} align='right'>
-                                        <Button variant="danger" size="sm" onClick={() => this.cancelReservation(reservation._id)}>Cancel</Button>
+                                        <Button disabled={disabled} variant="danger" size="sm" onClick={() => this.cancelReservation(reservation._id)}>Cancel</Button>
                                     </Col>
                                 </Row>
                             </Card>
