@@ -98,12 +98,16 @@ class Reservations extends Component {
                                         </Row>
                                         <Row>
                                             <Col>Quantity : {reservation.qty}</Col>
-                                        </Row>
+                                        </Row>										
                                     </Col>
                                     <Col align='right'><QRCode value={url} /></Col>
                                 </Row>
                                 <hr />
-                                <Row>
+								<Row>
+                                    <Col>Payment Method : <b>{reservation.paymentMethod}</b></Col>
+                                </Row>
+                                <Row>								
+								<br/>										
                                     <Col>Amount : {reservation.amount.toFixed(2)}</Col>
                                     <Col>Discount : {reservation.discount.toFixed(2)}</Col>
                                     <Col align='right'><b>Total :</b> {reservation.total.toFixed(2)}</Col>

@@ -41,7 +41,7 @@ class Payment extends Component {
 
     handleChange = type => event => {
         var value = event.target.value
-        if (type === 'card' || type === 'phone') {
+        if (type === 'card' || type === 'cash') {
             this.setState({ checked: type })
         } else {
             this.setState({ [type]: value })
@@ -71,22 +71,8 @@ class Payment extends Component {
                 this.setState({ showPaymentErr: true })
             }
         }
-        if (state.checked === 'phone') {
-            if (state.phoneNo && state.pin) {
-                validatePhone({ phone: state.phoneNo, pin: state.pin, total: state.total })
-                    .then(res => {
-                        if (res.validated) {
-                            this.createReservation({ phone: state.phoneNo })
-                        } else {
-                            this.setState({ showValidateErr: true })
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
-            } else {
-                this.setState({ showPaymentErr: true })
-            }
+        if (state.checked === 'cash') {
+            this.createReservation({ phone: state.phoneNo })
         }
     }
 
@@ -108,7 +94,8 @@ class Payment extends Component {
                 date: state.date,
                 amount: state.amount,
                 discount: state.discount,
-                total: state.total
+                total: state.total,
+                paymentMethod: state.checked
             }
             makeReservation(reservation)
                 .then(res => {
@@ -123,6 +110,7 @@ class Payment extends Component {
     }
 
     render() {
+        console.log(this.state.checked)
         return (
             <Form style={{ padding: 20 }} onSubmit={(e) => this.handleSubmit(e)}>
                 <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -161,10 +149,10 @@ class Payment extends Component {
                             />
                             <Form.Check
                                 type="radio"
-                                label="Mobile Number"
+                                label="Cash"
                                 name="formHorizontalRadios"
                                 id="formHorizontalRadios2"
-                                onChange={this.handleChange('phone')}
+                                onChange={this.handleChange('cash')}
                             />
                         </Col>
                     </Form.Row>
@@ -184,17 +172,8 @@ class Payment extends Component {
                             </Form.Group>
                         </Form.Row>
                     }
-                    {this.state.checked === 'phone' &&
-                        <Form.Row style={{ width: '75%' }}>
-                            <Form.Group as={Col} controlId="phoneNo">
-                                <Form.Label>Phone Number</Form.Label>
-                                <Form.Control placeholder="Phone number" onChange={this.handleChange('phoneNo')} value={this.state.phoneNo} />
-                            </Form.Group>
-                            <Form.Group as={Col} controlId="pin">
-                                <Form.Label>PIN</Form.Label>
-                                <Form.Control placeholder="PIN" onChange={this.handleChange('pin')} value={this.state.pin} />
-                            </Form.Group>
-                        </Form.Row>
+                    {this.state.checked === 'cash' &&
+                        <div />
                     }
                     <Form.Row style={{ width: '75%' }}>
                         {this.state.showPaymentErr && <p style={{ color: 'red' }}>{this.state.errMsg}</p>}
@@ -202,7 +181,7 @@ class Payment extends Component {
                     </Form.Row>
                     <Form.Row style={{ width: '75%' }}>
                         <Button variant="primary" type="submit">
-                            Make Payment
+                            {this.state.checked === "card" ? "Make Payment" : "Make Reservation"}
                         </Button>
                     </Form.Row>
                 </Row>
