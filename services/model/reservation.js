@@ -45,13 +45,17 @@ const reservationSchema = mongoose.Schema({
         type: Number,
         required: true,
     },
-    card:{
+    paymentMethod: {
+        type: String,
+        required: true,
+    },
+    card: {
         type: String
     },
-    phone:{
+    phone: {
         type: String
     },
-    email:{
+    email: {
         type: String
     }
 })

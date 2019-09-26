@@ -47,7 +47,11 @@ export function makeReservation(body) {
 }
 
 export function getReservations(user) {
-    return callGet(baseUrl + '/railway/reservations/' + user);
+    return callGet(baseUrl + '/railway/users/' + user + '/reservations/');
+}
+
+export function getReservation(rid) {
+    return callGet(baseUrl + '/railway/reservations/' + rid);
 }
 
 export function deleteReservation(id) {
@@ -74,7 +78,7 @@ const callPost = (url, body) => {
     return fetch(url, {
         method: 'POST',
         body: JSON.stringify(body),
-        headers: {"Content-Type": "application/json"}
+        headers: { "Content-Type": "application/json" }
     }).then(handleres);
 }
 
@@ -82,7 +86,7 @@ const callPut = (url, body) => {
     return fetch(url, {
         method: 'PUT',
         body: JSON.stringify(body),
-        headers: {"Content-Type": "application/json"}
+        headers: { "Content-Type": "application/json" }
     }).then(handleres);
 }
 

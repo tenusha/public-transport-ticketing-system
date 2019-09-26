@@ -21,13 +21,17 @@ router.post('/register', async (req, res) => {
         if (exist) {
             res.status(409).json({ exist: true })
         } else {
-            const discount = await client.validateNIC(body.nic)
+            const discount = false
+            if (body.nic) {
+                discount = await client.validateNIC(body.nic)
+            }
             var code = Math.floor(Math.random() * 90000) + 10000;
             var user = new UserModel({ ...body, discount: discount, enabled: false, code });
 
             //sending email
             const html = '<p>Hi ' + user.fname + ',<br><br> Thank you for registering with public transport ticketing system.<br><br>To activate your account, please click the following link and sign in now.<br>' + configs.backendUrl + '/users/reg/' + Buffer.from(body.email).toString('base64') + '</p> '
             client.sendEmail({ ...body, html, subject: 'Confirm Your Email' })
+
 
             var result = await user.save()
             res.status(200).json(result)
