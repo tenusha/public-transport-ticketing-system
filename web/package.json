@@ -16,7 +16,6 @@
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",
     "react-select": "^2.4.3",
-    "react-to-pdf": "0.0.8",
     "react-toastify": "^5.0.0-rc.6"
   },
   "scripts": {
