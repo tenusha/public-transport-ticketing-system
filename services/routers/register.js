@@ -21,7 +21,7 @@ router.post('/register', async (req, res) => {
         if (exist) {
             res.status(409).json({ exist: true })
         } else {
-            const discount = false
+            var discount = false
             if (body.nic) {
                 discount = await client.validateNIC(body.nic)
             }

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Modal, Button, Form, Image, Row } from 'react-bootstrap'
+import { Modal, Button, Form, Image, Row, Alert } from 'react-bootstrap'
 import { login } from '../Services'
 import { getHash } from './commons/Functions'
 import { toast } from 'react-toastify'
@@ -78,7 +78,7 @@ class Login extends Component {
                             <Form.Label>Password</Form.Label>
                             <Form.Control required type="password" placeholder="Enter Password" onChange={this.handleChange('password')} />
                         </Form.Group>
-                        {this.state.modalShowErr && <p style={{ color: 'red' }}>{this.state.modalErrMsg}</p>}
+                        {this.state.modalShowErr && <Alert variant={'danger'}>{this.state.modalErrMsg}</Alert>}
                         <Button variant="primary" type="submit" block>
                             Sign in
                         </Button>
