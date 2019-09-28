@@ -35,6 +35,10 @@ const userSchema = mongoose.Schema({
     enabled : {
         type: Boolean,
         required: true
+    },
+    loginCount : {
+        type: Number,
+        default: 0
     }
 })
 

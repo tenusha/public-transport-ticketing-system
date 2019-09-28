@@ -35,7 +35,8 @@ class AdminManagement extends Component {
 
     deleteEntry(email) {
         deleteAdmin(email).then(res => {
-            toast.success("Admin Successfully Deleted")
+            toast.success("Admin Successfully Deleted");
+            this.getAllAdmins();
         }).catch(err => {
             toast.error("Unable to delete admin")
         })
@@ -58,26 +59,26 @@ class AdminManagement extends Component {
         const form = event.currentTarget;
 
         if (form.checkValidity() === true) {
-            var body = {...this.state, password: getHash(this.state.nic)}
-            // register(body)
-            //     .then(res => {
-            //         toast.success("Admin Added Successfully");
-            //         this.getAllAdmins();
-            //     })
-            //     .catch(err => {
-            //         if (err.then && typeof err.then === 'function') {
-            //             err.then(e => {
-            //                 toast.error("Unable to add admin")
-            //                 if (e.exist) {
-            //                     this.setState({showErr: true})
-            //                 }
-            //             })
-            //         } else {
-            //             console.log(err)
-            //         }
-            //     })
+            var body = {fname: this.state.fname, lname: this.state.lname, nic: this.state.nic, phone: this.state.phone, email: this.state.email, address: this.state.address ,password: getHash(this.state.nic)}
+            console.log(body);
+            register(body)
+                .then(res => {
+                    toast.success("Admin Added Successfully");
+                    this.getAllAdmins();
+                })
+                .catch(err => {
+                    if (err.then && typeof err.then === 'function') {
+                        err.then(e => {
+                            toast.error("Unable to add admin")
+                            if (e.exist) {
+                                this.setState({showErr: true})
+                            }
+                        })
+                    } else {
+                        console.log(err)
+                    }
+                })
         }
-        // this.setState({ validated: true })
         event.preventDefault();
         event.stopPropagation()
     };

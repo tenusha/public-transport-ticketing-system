@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { Modal, Button, Form, Image, Row, Alert } from 'react-bootstrap'
-import { login } from '../Services'
+import { login, updateAccount } from '../Services'
 import { getHash } from './commons/Functions'
 import { toast } from 'react-toastify'
 
@@ -39,9 +39,14 @@ class Login extends Component {
             login({ username: this.state.username, password: getHash(this.state.password) })
                 .then(res => {
                     if (res.enabled === false) {
-                        toast.error("Please confirm your email !")
+                        if(res.loginCount == 0) {
+                            toast.error("Please confirm your email !")
+                        } else {
+                            toast.error("Oh snap! Your account is disabled !")
+                        }
                     } else {
                         localStorage.setItem('user', JSON.stringify(res))
+                        this.incrementLoginCount(res)
                         this.props.handleClose()
                     }
                 })
@@ -57,6 +62,15 @@ class Login extends Component {
     joinClick = () => {
         this.props.handleClose()
         this.props.handleRegisterShow()
+    }
+
+    incrementLoginCount(user) {
+        const newCount = user.loginCount + 1;
+        updateAccount({...user, loginCount : newCount}, user._id)
+            .then(res => {
+            })
+            .catch(err => {
+            });
     }
 
     render() {
