@@ -13,6 +13,7 @@ class RouteManage extends React.Component {
             route: [],
             stationName: '',
             fair: 0,
+            delName: 'Select a Route',
             selectRoutes: []
         }
 
@@ -51,9 +52,9 @@ class RouteManage extends React.Component {
                 toast.error("Route Already Exist")
             } else {
                 toast.success("Route Created Successfully")
-                setTimeout(()=>{
+                setTimeout(() => {
                     window.location.reload();
-                },2000)
+                }, 2000)
             }
         });
 
@@ -63,12 +64,12 @@ class RouteManage extends React.Component {
         event.preventDefault()
         event.stopPropagation()
 
-        if(this.state.stationName !== ''){
+        if (this.state.stationName !== '') {
 
             const body = {
                 name: this.state.selectName,
-                station:this.state.stationName,
-                fair:this.state.fair
+                station: this.state.stationName,
+                fair: this.state.fair
             }
 
             const option = {
@@ -84,21 +85,51 @@ class RouteManage extends React.Component {
                     toast.error("Station Already Exist")
                 } else {
                     toast.success("Station Created Successfully")
-                    setTimeout(()=>{
+                    setTimeout(() => {
                         window.location.reload();
-                    },2000)
+                    }, 2000)
                 }
             });
 
-        }else{
+        } else {
             toast.error("Station Name Empty")
         }
 
     }
 
+    handleSubmitThree = (event) => {
+        event.preventDefault()
+        event.stopPropagation()
+
+        const body = {
+            name: this.state.delName
+        }
+
+        const option = {
+            method: "DELETE",
+            body: JSON.stringify(body),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }
+
+        fetch(config.baseUrl + "/railway/route", option).then(res => res.json()).then(res => {
+            if (res.status) {
+                toast.success("Route Deleted Successfully")
+                setTimeout(() => {
+                    window.location.reload();
+                }, 2000)
+            } else {
+                toast.error("Error Deleting the Route")
+            }
+        });
+
+    }
+
 
     render() {
-        const routeSelect = this.state.selectRoutes.map(route=>{
+        console.log(this.state)
+        const routeSelect = this.state.selectRoutes.map(route => {
             return <option key={route._id} value={route.name}>{route.name}</option>
         })
 
@@ -132,6 +163,28 @@ class RouteManage extends React.Component {
                             }
                         </Form>
                     </Col>
+                    <Col sm style={{marginTop: "2%", paddingRight: "10%"}}>
+                        <h6 style={{width: '75%', textDecoration: 'underline', marginBottom: 20, fontWeight: "bold"}}>
+                            Delete Routes
+                        </h6>
+                        <Form onSubmit={this.handleSubmitThree}>
+                            <FormGroup>
+                                <Label for="routeDeleteSelect">Route Name</Label>
+                                <Input type="select" name="delName" id="routeDeleteSelect"
+                                       value={this.state.delName} onChange={this.handleChange}>
+                                    <option>Select a Route</option>
+                                    {routeSelect}
+                                </Input>
+                            </FormGroup>
+                            {this.state.delName !== "Select a Route" && (
+                                <FormGroup>
+                                    <Button color="danger">Delete Route</Button>
+                                </FormGroup>
+                            )}
+                        </Form>
+                    </Col>
+                </Row>
+                <Row>
                     <Col sm style={{marginTop: "2%", paddingRight: "10%"}}>
                         <h6 style={{width: '75%', textDecoration: 'underline', marginBottom: 20, fontWeight: "bold"}}>
                             Edit Existing Routes

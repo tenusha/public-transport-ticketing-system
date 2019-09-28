@@ -76,30 +76,34 @@ class TrainManage extends React.Component {
         event.preventDefault()
         event.stopPropagation()
 
-        const body = {
-            name: this.state.name,
-            route: this.state.route,
-            class: this.state.classes
-        }
-
-        const option = {
-            method: "POST",
-            body: JSON.stringify(body),
-            headers: {
-                "Content-Type": "application/json"
+        if (this.state.name !== '') {
+            const body = {
+                name: this.state.name,
+                route: this.state.route,
+                class: this.state.classes
             }
-        }
 
-        fetch(config.baseUrl + "/railway/train", option).then(res => res.json()).then(res => {
-            if (res.trainExist) {
-                toast.error("Train Already Exist")
-            } else {
-                toast.success("Train Created Successfully")
-                setTimeout(() => {
-                    window.location.reload();
-                }, 2000)
+            const option = {
+                method: "POST",
+                body: JSON.stringify(body),
+                headers: {
+                    "Content-Type": "application/json"
+                }
             }
-        });
+
+            fetch(config.baseUrl + "/railway/train", option).then(res => res.json()).then(res => {
+                if (res.trainExist) {
+                    toast.error("Train Already Exist")
+                } else {
+                    toast.success("Train Created Successfully")
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000)
+                }
+            });
+        } else {
+            toast.error("Train Name is Empty")
+        }
 
     }
 
@@ -127,7 +131,7 @@ class TrainManage extends React.Component {
                     window.location.reload();
                 }, 2000)
             } else {
-                toast.error("Train Already Exist")
+                toast.error("Error Deleting the Train")
             }
         });
 

@@ -251,5 +251,17 @@ router.delete('/railway/train', async (req, res) => {
     });
 });
 
+router.delete('/railway/route', async (req, res) => {
+
+    const query = {name: req.body.name}
+    routeModel.deleteOne(query, (err) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json(err);
+        } else {
+            res.status(200).json({status: true});
+        }
+    });
+});
 
 module.exports = router
