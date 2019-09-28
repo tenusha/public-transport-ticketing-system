@@ -31,6 +31,13 @@ const userSchema = mongoose.Schema({
     discount: {
         type: Boolean,
         required: true
+    },
+    enabled : {
+        type: Boolean,
+        required: true
+    },
+    code : {
+        type: String
     }
 })
 

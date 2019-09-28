@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 
-import { Modal, Button, Form, Image, Row } from 'react-bootstrap'
+import { Modal, Button, Form, Image, Row, Alert } from 'react-bootstrap'
 import { login } from '../Services'
 import { getHash } from './commons/Functions'
+import { toast } from 'react-toastify'
 
 class Login extends Component {
 
@@ -37,8 +38,12 @@ class Login extends Component {
         if (form.checkValidity() === true) {
             login({ username: this.state.username, password: getHash(this.state.password) })
                 .then(res => {
-                    localStorage.setItem('user', JSON.stringify(res))
-                    this.props.handleClose()
+                    if (res.enabled === false) {
+                        toast.error("Please confirm your email !")
+                    } else {
+                        localStorage.setItem('user', JSON.stringify(res))
+                        this.props.handleClose()
+                    }
                 })
                 .catch(err => {
                     console.log(err)
@@ -73,7 +78,7 @@ class Login extends Component {
                             <Form.Label>Password</Form.Label>
                             <Form.Control required type="password" placeholder="Enter Password" onChange={this.handleChange('password')} />
                         </Form.Group>
-                        {this.state.modalShowErr && <p style={{ color: 'red' }}>{this.state.modalErrMsg}</p>}
+                        {this.state.modalShowErr && <Alert variant={'danger'}>{this.state.modalErrMsg}</Alert>}
                         <Button variant="primary" type="submit" block>
                             Sign in
                         </Button>

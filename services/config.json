@@ -13,5 +13,7 @@
         "accountSid": "AC86b7448c3ed5e78b18f44d5e84fbdcb1",
         "authToken": "fee993da9d4cafa918929607a8b37827",
         "phoneNo": "+18504040553"
-    }
+    },
+    "backendUrl" : "http://192.168.1.111:3001",
+    "frontendUrl" : "http://192.168.1.111:3000"
 }
