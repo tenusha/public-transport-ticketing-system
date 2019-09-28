@@ -43,6 +43,38 @@ module.exports = {
             }
         });
     },
+    sendReservationEmail: async function (body) {
+
+        const emailConfig = config.emailClient
+
+        const transporter = nodemailer.createTransport({
+            host: emailConfig.host,
+            port: 465,
+            secure: true,
+            auth: emailConfig.auth
+        });
+
+        var mailOptions = {
+            from: '"Sri Lanka Railways"' + emailConfig.email,
+            to: body.email,
+            subject: body.subject,
+            html: body.html,
+            attachments: [
+                {
+                    path: body.path,
+                    cid: '123'
+                }
+            ]
+        };
+
+        transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+                console.log(error)
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+    },
 
     sendTextMessage: async function (body) {
         var to = body.phone

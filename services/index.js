@@ -16,6 +16,7 @@ mongoose.connect(config.mongoDB, { useNewUrlParser: true }, function (err) {
     console.log('mongo db connected')
 }).catch(err => console.log(err))
 
+app.use(express.static('images'))
 app.use(express.json());
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");

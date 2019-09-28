@@ -6,6 +6,8 @@ const classModel = require('../model/classes')
 const scheduleModel = require('../model/schedule')
 const reservationModel = require('../model/reservation')
 const client = require('../client')
+const configs = require('../config.json')
+const qrcode = require('qrcode');
 
 router.get('/railway/routes', async (req, res) => {
     try {
@@ -67,12 +69,17 @@ router.post('/railway/reservations', async (req, res) => {
         const body = req.body
         var reservation = new reservationModel(body)
         var result = await reservation.save()
-        // if (body.phone) {
-        //     client.sendTextMessage({ ...body, reservationID: result._id })
-        // } else if (body.card) {
-        const html = '<h2><u>Reservation Slip</u></h2><p>Reference No : <b> ' + result._id + ' </b><br><br>From <b> ' + body.from + ' </b> to <b> ' + body.to + ' </b><br>' + 'Date :<b> ' + body.date + ' </b> Time :<b> ' + body.time + ' </b><br>Train : <b>' + body.train + ' </b> Class: <b> ' + body.trainClass + ' </b><br>Quantity : <b> ' + body.qty + ' </b></p><p>Total : <b> ' + body.total + ' LKR</b></p> '
-        client.sendEmail({ ...body, html: html, subject: 'Railway e-Ticket' })
-        // }
+
+        const img = await qrcode.toDataURL(configs.frontendUrl + "/ticket/" + result._id);
+        var base64Data = img.replace(/^data:image\/png;base64,/, "");
+        await require("fs").writeFile("images/" + result._id + ".png", base64Data, 'base64', function (err) {
+            console.log(err);
+        });
+
+        const html = '<html><body><h2><u>Reservation Slip</u></h2><p>Reference No : <b> ' + result._id + ' </b><br><br>From <b> ' + body.from + ' </b> to <b> ' + body.to + ' </b><br>' + 'Date :<b> ' + body.date + ' </b> Time :<b> ' + body.time + ' </b><br>Train : <b>' + body.train + ' </b> Class: <b> ' + body.trainClass + ' </b><br>Quantity : <b> ' + body.qty + ' </b></p><p>Total : <b> ' + body.total + ' LKR</b></p><br><img src="cid:123"/></body></html>'
+
+        client.sendReservationEmail({ ...body, html: html, subject: 'Railway e-Ticket', path: 'images/' + result._id + '.png' })
+
         res.status(200).json(result)
     }
     catch (err) {
