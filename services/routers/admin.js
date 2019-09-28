@@ -56,7 +56,7 @@ router.post('/admin/register', async (req, res) => {
             res.status(409).json({ exist: true })
         } else {
             var admin = new AdminModel({ ...body, enabled: false});
-            console.log(admin);
+
             //sending email
             const html = '<p>Hi ' + admin.fname + ',<br><br> You have been registered as an admin to the public transport ticketing system.<br><br>To activate your account, please click the following link and sign in now.<br><br>Please use your <b>NIC Number</b> as your password to sign in.<br><br>' + configs.backendUrl + '/admin/reg/' + Buffer.from(body.email).toString('base64') + '</p>'
             client.sendEmail({ ...body, html, subject: 'Confirm Your Email' })
