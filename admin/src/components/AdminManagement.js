@@ -127,7 +127,7 @@ class AdminManagement extends Component {
                             <Form.Control required as="textarea" rows="3" onChange={this.handleChange('address')}/>
                         </Form.Group>
                     </Form.Row>
-                    <Form.Row style={{width: '75%', padding: 5}}>
+                    <Form.Row style={{width: '75%', padding: 5,  paddingBottom: 20}}>
                         <Button variant="primary" type="submit">
                             Add Admin
                         </Button>
