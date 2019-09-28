@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const userSchema = mongoose.Schema({
+const adminSchema = mongoose.Schema({
     fname: {
         type: String,
         required: true,
@@ -28,14 +28,10 @@ const userSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    discount: {
-        type: Boolean,
-        required: true
-    },
     enabled : {
         type: Boolean,
         required: true
     }
-})
+});
 
-const user = module.exports = mongoose.model('User', userSchema)
+const admin = module.exports = mongoose.model('Admin', adminSchema);

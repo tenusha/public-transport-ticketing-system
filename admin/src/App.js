@@ -9,6 +9,7 @@ import AccountSettings from './components/AccountSettings'
 import NavBar from './components/commons/NavBar'
 import Footer from './components/Footer'
 import Home from './components/Home'
+import AdminManagement from './components/AdminManagement'
 import Login from './components/Login'
 import Register from './components/Register'
 
@@ -86,7 +87,7 @@ class App extends Component {
             <Suspense fallback={<div>Loading...</div>}>
               <Switch>
                 <Route exact path="/" component={Home} />
-                <Route exact path="/admins" component={Home} />
+                <Route exact path="/admins" component={AdminManagement} />
                 <Route exact path="/routs" component={Home} />
                 <Route exact path="/users" component={Home} />
                 <Route path="/account" component={AccountSettings} />

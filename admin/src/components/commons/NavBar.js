@@ -5,7 +5,7 @@ import { Navbar, Nav, NavDropdown, Image, Row } from 'react-bootstrap'
 class NavBar extends Component {
 
     render() {
-        var user = localStorage.getItem('user')
+        var user = localStorage.getItem('admin_user')
         if (user) {
             user = JSON.parse(user)
         }
