@@ -20,10 +20,10 @@ class NavBar extends Component {
                         <Nav className="ml-auto">
                             {user ?
                                 <>
-
                                     <Nav.Link href="/" >{'Reports'}</Nav.Link>
-                                    <Nav.Link href="/admin" >{'Admin Management'}</Nav.Link>
                                     <Nav.Link href="/routs" >{'Routs'}</Nav.Link>
+                                    <Nav.Link href="/admins" >{'Admins'}</Nav.Link>
+                                    <Nav.Link href="/users" >{'Users'}</Nav.Link>
                                     <NavDropdown title={user.fname} id="nav-dropdown" alignRight>
                                         <NavDropdown.Item href="/account">Account Settings</NavDropdown.Item>
                                         <NavDropdown.Divider />
