@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 const AdminModel = require('../model/admin')
 const client = require('../client')
+const configs = require('../config.json')
 
 router.post('/admin/login', (req, res) => {
     const body = req.body
@@ -40,7 +41,7 @@ router.put('/admin/:id', async (req, res) => {
 router.post('/admin/register', async (req, res) => {
     const body = req.body
     const email = body.email
-
+    console.log(body.email);
     var exist = ""
     try {
         await AdminModel.findOne({ email: email }, (err, val) => {
@@ -55,8 +56,9 @@ router.post('/admin/register', async (req, res) => {
             res.status(409).json({ exist: true })
         } else {
             var admin = new AdminModel({ ...body, enabled: false});
+
             //sending email
-            const html = '<p>Hi ' + admin.fname + ',<br><br> You have been registered as an admin in the public transport ticketing system.<br><br>To activate your account, please click the following link and sign in now.<br>' + configs.backendUrl + '/admin/reg/' + Buffer.from(body.email).toString('base64') + '</p><br>Please use your <b>NIC Number</b> to login'
+            const html = '<p>Hi ' + admin.fname + ',<br><br> You have been registered as an admin to the public transport ticketing system.<br><br>To activate your account, please click the following link and sign in now.<br><br>Please use your <b>NIC Number</b> as your password to sign in.<br><br>' + configs.backendUrl + '/admin/reg/' + Buffer.from(body.email).toString('base64') + '</p>'
             client.sendEmail({ ...body, html, subject: 'Confirm Your Email' })
 
             var result = await admin.save()
@@ -73,7 +75,7 @@ router.get('/admin/reg/:email', async (req, res) => {
         const email = Buffer.from(encodedEmail, 'base64').toString('ascii');
 
         //get user from db
-        var user = await UserModel.findOne({ email }).exec();
+        var user = await AdminModel.findOne({ email }).exec();
         user.set({ enabled: true })
 
         //saving user in db
@@ -101,7 +103,7 @@ router.get('/admin/admins', async (req, res) => {
 
 router.delete('/admin/:id', async (req, res) => {
     try {
-        const result = await AdminModel.deleteOne({ _id: req.params.id }).exec();
+        const result = await AdminModel.deleteOne({ email: req.params.id }).exec();
         res.status(200).json(result)
     } catch (err) {
         res.status(500).json(err)

@@ -92,6 +92,7 @@ class AccountSettings extends Component {
             .then(res => {
                 toast.success("Account updated!!!");
                 localStorage.setItem('admin_user', JSON.stringify(res));
+                window.location.reload();
             })
             .catch(err => {
                 toast.error("Unable to update new data!!!");

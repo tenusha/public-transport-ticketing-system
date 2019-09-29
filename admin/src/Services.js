@@ -14,12 +14,24 @@ export function admins() {
     return callGet(baseUrl + '/admin/admins');
 }
 
+export function users() {
+    return callGet(baseUrl + '/users');
+}
+
+export function deleteUser(id) {
+    return callDelete(baseUrl + '/users/' + id);
+}
+
 export function deleteAdmin(id) {
     return callDelete(baseUrl + '/admin/' + id);
 }
 
 export function updateAccount(body, id) {
     return callPut(baseUrl + '/admin/' + id, body)
+}
+
+export function updateUser(body, id) {
+    return callPut(baseUrl + '/users/' + id, body)
 }
 
 const callGet = (url) => {
