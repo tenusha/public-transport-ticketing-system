@@ -12,15 +12,15 @@ class TrainManage extends React.Component {
             route: 'Select a Route',
             classes: [
                 {
-                    name: '1st Class',
+                    name: '1st class',
                     seats: 0
                 },
                 {
-                    name: '2nd Class',
+                    name: '2nd class',
                     seats: 0
                 },
                 {
-                    name: '3rd Class',
+                    name: '3rd class',
                     seats: 0
                 }
             ],
@@ -55,17 +55,17 @@ class TrainManage extends React.Component {
     handleClass = (name, value) => {
         const tempClasses = this.state.classes
         if (name === 'firstClass') {
-            tempClasses[0].seats = value
+            tempClasses[0].seats = parseInt(value)
             this.setState({
                 classes: tempClasses
             })
         } else if (name === 'secondClass') {
-            tempClasses[1].seats = value
+            tempClasses[1].seats = parseInt(value)
             this.setState({
                 classes: tempClasses
             })
         } else if (name === 'thirdClass') {
-            tempClasses[2].seats = value
+            tempClasses[2].seats = parseInt(value)
             this.setState({
                 classes: tempClasses
             })
@@ -80,7 +80,7 @@ class TrainManage extends React.Component {
             const body = {
                 name: this.state.name,
                 route: this.state.route,
-                class: this.state.classes
+                classes: this.state.classes
             }
 
             const option = {
