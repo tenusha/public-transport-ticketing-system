@@ -10,7 +10,7 @@ router.post('/register', async (req, res) => {
 
     var exist = ""
     try {
-        await UserModel.findOne({ email: email }, (err, val) => {
+        await UserModel.findOne({email: email}, (err, val) => {
             if (err) {
                 console.log(err);
             } else {
@@ -19,18 +19,22 @@ router.post('/register', async (req, res) => {
         });
 
         if (exist) {
-            res.status(409).json({ exist: true })
+            if (exist.googleId) {
+                res.status(200).json({exist: true, _id: exist._id})
+            } else {
+                res.status(409).json({exist: true})
+            }
         } else {
             var discount = false
             if (body.nic) {
                 discount = await client.validateNIC(body.nic)
             }
             var code = Math.floor(Math.random() * 90000) + 10000;
-            var user = new UserModel({ ...body, discount: discount, enabled: false, code });
+            var user = new UserModel({...body, discount: discount, enabled: false, code});
 
             //sending email
             const html = '<p>Hi ' + user.fname + ',<br><br> Thank you for registering with public transport ticketing system.<br><br>To activate your account, please click the following link and sign in now.<br>' + configs.backendUrl + '/users/reg/' + Buffer.from(body.email).toString('base64') + '</p> '
-            client.sendEmail({ ...body, html, subject: 'Confirm Your Email' })
+            client.sendEmail({...body, html, subject: 'Confirm Your Email'})
 
 
             var result = await user.save()
@@ -47,8 +51,8 @@ router.get('/users/reg/:email', async (req, res) => {
         const email = Buffer.from(encodedEmail, 'base64').toString('ascii');
 
         //get user from db
-        var user = await UserModel.findOne({ email }).exec();
-        user.set({ enabled: true })
+        var user = await UserModel.findOne({email}).exec();
+        user.set({enabled: true})
 
         //saving user in db
         user.save()

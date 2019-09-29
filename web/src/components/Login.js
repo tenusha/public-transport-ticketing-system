@@ -74,15 +74,15 @@ class Login extends Component {
             });
     };
 
-    responseGoogle = (response) => {
+    responseGoogle = async (response) => {
         const profileObj = response.profileObj;
-        const user = {
+        var user = {
             username: profileObj.givenName,
             email: profileObj.email,
             fname: profileObj.givenName,
             lname: profileObj.familyName,
             googleId: profileObj.googleId,
-            imageUrl : profileObj.imageUrl,
+            imageUrl: profileObj.imageUrl,
             phone: "Enter phone",
             address: "Enter address",
             password: "null - random",
@@ -92,8 +92,11 @@ class Login extends Component {
             loginCount: 0
         };
         localStorage.setItem('user', JSON.stringify(user));
-        this.setState({imageUrl : profileObj.imageUrl});
-        register(user).then().catch();
+        this.setState({imageUrl: profileObj.imageUrl});
+        await register(user).then(res => {
+            user._id = res._id
+        }).catch();
+        localStorage.setItem('user', JSON.stringify(user));
         this.props.handleClose();
     };
 
@@ -102,29 +105,27 @@ class Login extends Component {
     }
 
     render() {
-        const img = (this.state.imageUrl) ? <Image src={this.state.imageUrl} width='30%'/> : <Image src={require("../images/login.png")} width='30%'/> ;
+        const img = (this.state.imageUrl) ? <Image src={this.state.imageUrl} width='30%'/> :
+            <Image src={require("../images/login.png")} width='30%'/>;
         return (
             <Modal show={this.props.showLogin} onHide={this.props.handleClose}>
                 <Form onSubmit={e => this.handleSubmit(e)}>
                     <Modal.Header closeButton>
                     </Modal.Header>
                     <Modal.Body>
-                        <Row style={{alignItems: 'center', justifyContent: 'center', marginBottom : 15}}>
+                        <Row style={{alignItems: 'center', justifyContent: 'center', marginBottom: 15}}>
                             {img}
                         </Row>
                         <Row style={{alignItems: 'center', justifyContent: 'center'}}>
                             <GoogleLogin
+                                style={{width: '100%'}}
                                 clientId="142559740236-kl8af28rsfc12v2e4rulgg97ijhdla5d.apps.googleusercontent.com"
                                 buttonText="LOGIN WITH GOOGLE"
                                 onSuccess={this.responseGoogle}
                                 onFailure={this.errResponseGoogle}
                             />
                         </Row>
-                        <hr style={{
-                            color: "grey",
-                            backgroundColor: "grey",
-                            height: 1
-                        }} />
+                        <hr/>
                         <Form.Group controlId="formBasicEmail">
                             <Form.Label>Email</Form.Label>
                             <Form.Control required type="username" placeholder="Enter email"
