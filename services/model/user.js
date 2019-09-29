@@ -39,6 +39,9 @@ const userSchema = mongoose.Schema({
     loginCount : {
         type: Number,
         default: 0
+    },
+    googleId: {
+        type : String
     }
 })
 

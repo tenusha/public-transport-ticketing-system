@@ -7,6 +7,7 @@ class NavBar extends Component {
     render() {
         var user = localStorage.getItem('user')
         if (user) {
+            console.log(JSON.stringify(user))
             user = JSON.parse(user)
         }
         return (
@@ -26,6 +27,7 @@ class NavBar extends Component {
                                         <NavDropdown.Divider />
                                         <NavDropdown.Item onClick={this.props.logout}>Sign out</NavDropdown.Item>
                                     </NavDropdown>
+                                    { (user.imageUrl) ? <Image src={user.imageUrl} width='12%'/> : <Image src={require("../../images/login.png")} width='5%'/> }
                                 </>
                                 :
                                 <>
