@@ -1,9 +1,10 @@
-import React, { Component } from 'react'
+import React, {Component} from 'react'
 
-import { Modal, Button, Form, Image, Row, Alert } from 'react-bootstrap'
-import { login } from '../Services'
-import { getHash } from './commons/Functions'
-import { toast } from 'react-toastify'
+import {Modal, Button, Form, Image, Row, Alert} from 'react-bootstrap'
+import {login, updateAccount, register} from '../Services'
+import {getHash} from './commons/Functions'
+import {toast} from 'react-toastify'
+import GoogleLogin from 'react-google-login';
 
 class Login extends Component {
 
@@ -28,26 +29,31 @@ class Login extends Component {
         if (event.target) {
             value = event.target.value;
         }
-        this.setState({ [type]: value })
+        this.setState({[type]: value})
     }
 
     handleSubmit = event => {
-        this.setState({ modalShowErr: false })
+        this.setState({modalShowErr: false})
         const form = event.currentTarget
 
         if (form.checkValidity() === true) {
-            login({ username: this.state.username, password: getHash(this.state.password) })
+            login({username: this.state.username, password: getHash(this.state.password)})
                 .then(res => {
                     if (res.enabled === false) {
-                        toast.error("Please confirm your email !")
+                        if (res.loginCount === 0) {
+                            toast.error("Please confirm your email !")
+                        } else {
+                            toast.error("Oh snap! Your account is disabled !")
+                        }
                     } else {
                         localStorage.setItem('user', JSON.stringify(res))
+                        this.incrementLoginCount(res)
                         this.props.handleClose()
                     }
                 })
                 .catch(err => {
                     console.log(err)
-                    this.setState({ modalShowErr: true })
+                    this.setState({modalShowErr: true})
                 })
         }
         event.preventDefault()
@@ -59,24 +65,76 @@ class Login extends Component {
         this.props.handleRegisterShow()
     }
 
+    incrementLoginCount(user) {
+        const newCount = user.loginCount + 1;
+        updateAccount({...user, loginCount: newCount}, user._id)
+            .then(res => {
+            })
+            .catch(err => {
+            });
+    };
+
+    responseGoogle = (response) => {
+        const profileObj = response.profileObj;
+        const user = {
+            username: profileObj.givenName,
+            email: profileObj.email,
+            fname: profileObj.givenName,
+            lname: profileObj.familyName,
+            googleId: profileObj.googleId,
+            imageUrl : profileObj.imageUrl,
+            phone: "Enter phone",
+            address: "Enter address",
+            password: "null - random",
+            nic: "Enter NIC",
+            discount: "null",
+            enabled: true,
+            loginCount: 0
+        };
+        localStorage.setItem('user', JSON.stringify(user));
+        this.setState({imageUrl : profileObj.imageUrl});
+        register(user).then().catch();
+        this.props.handleClose();
+    };
+
+    errResponseGoogle = (response) => {
+        toast.error("Unable to Sign in with Google !");
+    }
+
     render() {
+        const img = (this.state.imageUrl) ? <Image src={this.state.imageUrl} width='30%'/> : <Image src={require("../images/login.png")} width='30%'/> ;
         return (
             <Modal show={this.props.showLogin} onHide={this.props.handleClose}>
                 <Form onSubmit={e => this.handleSubmit(e)}>
                     <Modal.Header closeButton>
                     </Modal.Header>
                     <Modal.Body>
-                        <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
-                            <Image src={require("../images/login.png")} width='30%' />
+                        <Row style={{alignItems: 'center', justifyContent: 'center', marginBottom : 15}}>
+                            {img}
                         </Row>
+                        <Row style={{alignItems: 'center', justifyContent: 'center'}}>
+                            <GoogleLogin
+                                clientId="142559740236-kl8af28rsfc12v2e4rulgg97ijhdla5d.apps.googleusercontent.com"
+                                buttonText="LOGIN WITH GOOGLE"
+                                onSuccess={this.responseGoogle}
+                                onFailure={this.errResponseGoogle}
+                            />
+                        </Row>
+                        <hr style={{
+                            color: "grey",
+                            backgroundColor: "grey",
+                            height: 1
+                        }} />
                         <Form.Group controlId="formBasicEmail">
                             <Form.Label>Email</Form.Label>
-                            <Form.Control required type="username" placeholder="Enter email" onChange={this.handleChange('username')} />
+                            <Form.Control required type="username" placeholder="Enter email"
+                                          onChange={this.handleChange('username')}/>
                         </Form.Group>
 
                         <Form.Group controlId="formBasicPassword">
                             <Form.Label>Password</Form.Label>
-                            <Form.Control required type="password" placeholder="Enter Password" onChange={this.handleChange('password')} />
+                            <Form.Control required type="password" placeholder="Enter Password"
+                                          onChange={this.handleChange('password')}/>
                         </Form.Group>
                         {this.state.modalShowErr && <Alert variant={'danger'}>{this.state.modalErrMsg}</Alert>}
                         <Button variant="primary" type="submit" block>
