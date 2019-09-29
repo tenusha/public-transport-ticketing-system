@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 
-import {Navbar, Nav, NavDropdown, Image, Row} from 'react-bootstrap'
+import {Navbar, Nav, NavDropdown, Image} from 'react-bootstrap'
 
 class NavBar extends Component {
 
@@ -20,6 +20,7 @@ class NavBar extends Component {
                         <Nav className="ml-auto">
                             {user ?
                                 <>
+                                    <Nav.Link href="/">{'Home'}</Nav.Link>
                                     <Nav.Link href="/reports">{'Reports'}</Nav.Link>
                                     <Nav.Link href="/routeManage">{'Routes'}</Nav.Link>
                                     <Nav.Link href="/trainManage">{'Trains'}</Nav.Link>
@@ -39,7 +40,7 @@ class NavBar extends Component {
                             }
                         </Nav>
                     </Navbar.Collapse>
-                </Navbar>
+                </Navbar>                
             </>
         );
     }

@@ -114,7 +114,7 @@ db.employees.insert({"firstName":"Ranmal","lastName":"Dewage","nic":"111111111V"
 db.employees.insert({"firstName":"Vimukthi","lastName":"Rajapaksha","nic":"222222222V","address":[{"street":"a","city":"b","state":"c"},{"street":"a1","city":"b1","state":"c1"}]});
 
 
-
+db.admins.insert({"fname":"ara","lname":"a","phone":"0777296705","nic":"123456789V","address":"a","email":"aravindakulasooriya1995@gmail.com","password":"3007","discount":false,"enabled":true,"__v":0})
 
 
 
