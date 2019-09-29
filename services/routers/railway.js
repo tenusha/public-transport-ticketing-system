@@ -264,4 +264,31 @@ router.delete('/railway/route', async (req, res) => {
     });
 });
 
+router.post("/railway/reservations/monthly", (req, res) => {
+
+    const yearMonth = req.body.year + "-" + req.body.month
+    const query = {"date": new RegExp(yearMonth, "i")}
+    reservationModel.find(query, (err, reservation) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json(err);
+        } else {
+            res.status(200).json(reservation)
+        }
+    });
+});
+
+router.post("/railway/reservations/yearly", (req, res) => {
+
+    const query = {"date": new RegExp(req.body.year, "i")}
+    reservationModel.find(query, (err, reservation) => {
+        if (err) {
+            console.log(err);
+            res.status(500).json(err);
+        } else {
+            res.status(200).json(reservation)
+        }
+    });
+});
+
 module.exports = router

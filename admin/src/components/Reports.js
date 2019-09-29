@@ -1,5 +1,6 @@
 import React from "react"
 import {Button, Col, Container, Form, FormGroup, Input, Label, Row} from "reactstrap";
+import config from "../config";
 
 class Reports extends React.Component {
 
@@ -37,8 +38,8 @@ class Reports extends React.Component {
             }
         }
 
-        fetch("http://localhost:3020/trains/resYear", option).then(res => res.json()).then(data => {
-            this.props.history.push("/reportcharts", {res: data})
+        fetch(config.baseUrl + "/railway/reservations/yearly", option).then(res => res.json()).then(data => {
+            this.props.history.push("/reportCharts", {res: data})
         })
 
     }
@@ -59,8 +60,8 @@ class Reports extends React.Component {
             }
         }
 
-        fetch("http://localhost:3020/trains/resYearMonth", option).then(res => res.json()).then(data => {
-            this.props.history.push("/reportcharts", {res: data})
+        fetch(config.baseUrl + "/railway/reservations/monthly", option).then(res => res.json()).then(data => {
+            this.props.history.push("/reportCharts", {res: data})
         })
 
     }
