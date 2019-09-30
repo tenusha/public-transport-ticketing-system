@@ -37,7 +37,7 @@ class Login extends Component {
         if (form.checkValidity() === true) {
             login({ username: this.state.username, password: getHash(this.state.password) })
                 .then(res => {
-                    localStorage.setItem('user', JSON.stringify(res))
+                    localStorage.setItem('admin_user', JSON.stringify(res))
                     this.props.handleClose()
                 })
                 .catch(err => {

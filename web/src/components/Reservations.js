@@ -39,7 +39,7 @@ class Reservations extends Component {
             user = JSON.parse(user)
             getReservations(user._id)
                 .then(res => {
-                    this.setState({ reservations: res }, () => this.paginateReservations())
+                    this.setState({ reservations: res.reverse() }, () => this.paginateReservations())
                 })
                 .catch(err => {
                     console.log(err)

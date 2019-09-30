@@ -22,7 +22,7 @@ class AccountSettings extends Component {
     }
 
     componentDidMount() {
-        var user = localStorage.getItem('user')
+        var user = localStorage.getItem('admin_user')
         if (user) {
             user = JSON.parse(user)
             this.setState({
@@ -39,7 +39,7 @@ class AccountSettings extends Component {
     }
 
     componentWillUpdate() {
-        var user = localStorage.getItem('user')
+        var user = localStorage.getItem('admin_user')
         if (!user) {
             this.props.history.push('/')
         }
@@ -63,8 +63,8 @@ class AccountSettings extends Component {
 
     handleSubmit = event => {
         const form = event.currentTarget
-        const id = JSON.parse(localStorage.getItem('user'))._id
-        var user = localStorage.getItem('user')
+        const id = JSON.parse(localStorage.getItem('admin_user'))._id
+        var user = localStorage.getItem('admin_user')
         if (user) {
             user = JSON.parse(user)
         }
@@ -91,7 +91,8 @@ class AccountSettings extends Component {
         updateAccount(body, id)
             .then(res => {
                 toast.success("Account updated!!!");
-                localStorage.setItem('user', JSON.stringify(res));
+                localStorage.setItem('admin_user', JSON.stringify(res));
+                window.location.reload();
             })
             .catch(err => {
                 toast.error("Unable to update new data!!!");
