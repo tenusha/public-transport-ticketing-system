@@ -58,7 +58,7 @@ class Payment extends Component {
                 validateCard({ card: state.cardNo, cvc: state.cvc, exp: state.exp, total: state.total })
                     .then(res => {
                         if (res.validated) {
-                            this.createReservation({ card: state.cardNo })
+                            this.createReservation({ card: state.cardNo, phone: state.phoneNo })
                         } else {
                             this.setState({ showValidateErr: true })
                         }

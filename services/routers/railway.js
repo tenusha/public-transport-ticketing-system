@@ -20,7 +20,7 @@ router.get('/railway/routes', async (req, res) => {
 
 router.get('/railway/route/:id', async (req, res) => {
     try {
-        const result = await routeModel.findOne({'_id': req.params.id})
+        const result = await routeModel.findOne({ '_id': req.params.id })
         res.status(200).json(result)
     } catch (err) {
         res.status(500).json(err)
@@ -38,8 +38,8 @@ router.get('/railway/trains', async (req, res) => {
 
 router.get('/railway/trains/:route', async (req, res) => {
     try {
-        const route = await routeModel.findOne({'_id': req.params.route})
-        const result = await trainModel.find({route: route.name})
+        const route = await routeModel.findOne({ '_id': req.params.route })
+        const result = await trainModel.find({ route: route.name })
         res.status(200).json(result)
     } catch (err) {
         res.status(500).json(err)
@@ -68,7 +68,7 @@ router.post('/railway/reservations', async (req, res) => {
     try {
         const body = req.body
         var reservation = new reservationModel(body)
-        var result = await reservation.save()        
+        var result = await reservation.save()
 
         // send email
         const img = await qrcode.toDataURL(configs.frontendUrl + "/ticket/" + result._id);
@@ -76,7 +76,7 @@ router.post('/railway/reservations', async (req, res) => {
         await require("fs").writeFile("images/" + result._id + ".png", base64Data, 'base64', function (err) {
             console.log(err);
         });
-        
+
         const html = '<html><body><h2><u>Reservation Slip</u></h2><p>Reference No : <b> ' + result._id + ' </b><br><br>From <b> ' + body.from + ' </b> to <b> ' + body.to + ' </b><br>' + 'Date :<b> ' + body.date + ' </b> Time :<b> ' + body.time + ' </b><br>Train : <b>' + body.train + ' </b> Class: <b> ' + body.trainClass + ' </b><br>Quantity : <b> ' + body.qty + ' </b></p><p>Total : <b> ' + body.total + ' LKR</b></p><br><img src="cid:123"/></body></html>'
         client.sendReservationEmail({
             ...body,
@@ -86,7 +86,9 @@ router.post('/railway/reservations', async (req, res) => {
         })
 
         // send text message
-        client.sendTextMessage({ ...body, reservationID: result._id })
+        if (body.phone) {
+            client.sendTextMessage({ ...body, reservationID: result._id })
+        }
 
         res.status(200).json(result)
     } catch (err) {
@@ -105,7 +107,7 @@ router.get('/railway/reservations', async (req, res) => {
 
 router.get('/railway/users/:user/reservations', async (req, res) => {
     try {
-        const result = await reservationModel.find({user: req.params.user})
+        const result = await reservationModel.find({ user: req.params.user })
         res.status(200).json(result)
     } catch (err) {
         res.status(500).json(err)
@@ -118,13 +120,13 @@ router.get('/railway/reservations/trains/:train/class/:trainClass/date/:date/tim
         const trainClass = req.params.trainClass
         const date = req.params.date
         const time = req.params.time
-        const result = await reservationModel.find({train: train, trainClass: trainClass, date: date, time: time})
+        const result = await reservationModel.find({ train: train, trainClass: trainClass, date: date, time: time })
         var bookings = 0
         result.map(item => bookings += item.qty)
         if (result.length <= 0) {
-            res.status(200).json({bookings: 0})
+            res.status(200).json({ bookings: 0 })
         } else {
-            res.status(200).json({bookings})
+            res.status(200).json({ bookings })
         }
     } catch (err) {
         res.status(500).json(err)
@@ -133,7 +135,7 @@ router.get('/railway/reservations/trains/:train/class/:trainClass/date/:date/tim
 
 router.get('/railway/reservations/:id', async (req, res) => {
     try {
-        const result = await reservationModel.findOne({_id: req.params.id}).exec()
+        const result = await reservationModel.findOne({ _id: req.params.id }).exec()
         res.status(200).json(result)
     } catch (err) {
         res.status(500).json(err)
@@ -142,7 +144,7 @@ router.get('/railway/reservations/:id', async (req, res) => {
 
 router.delete('/railway/reservations/:id', async (req, res) => {
     try {
-        const result = await reservationModel.deleteOne({_id: req.params.id}).exec()
+        const result = await reservationModel.deleteOne({ _id: req.params.id }).exec()
         res.status(200).json(result)
     } catch (err) {
         res.status(500).json(err)
@@ -151,14 +153,14 @@ router.delete('/railway/reservations/:id', async (req, res) => {
 
 router.post('/railway/route', async (req, res) => {
 
-    const query = {name: req.body.name}
+    const query = { name: req.body.name }
     routeModel.find(query, (err, route) => {
         if (err) {
             console.log(err);
             res.status(500).json(err);
         } else {
             if (route.length != 0) {
-                res.status(200).json({routeExist: true});
+                res.status(200).json({ routeExist: true });
             } else {
 
                 let routes = new routeModel(req.body);
@@ -167,7 +169,7 @@ router.post('/railway/route', async (req, res) => {
                         console.log(err);
                         res.status(500).json(err);
                     } else {
-                        res.status(200).json({routeExist: false});
+                        res.status(200).json({ routeExist: false });
                     }
                 });
 
@@ -183,7 +185,7 @@ router.put('/railway/route', async (req, res) => {
         name: req.body.station,
         fair: req.body.fair
     }
-    const query = {name: req.body.name}
+    const query = { name: req.body.name }
     await routeModel.find(query, async (err, route) => {
 
         if (err) {
@@ -196,14 +198,14 @@ router.put('/railway/route', async (req, res) => {
             });
 
             if (found) {
-                res.status(200).json({stationExist: true});
+                res.status(200).json({ stationExist: true });
             } else {
-                routeModel.updateOne(query, {$push: {route: body}}, (err) => {
+                routeModel.updateOne(query, { $push: { route: body } }, (err) => {
                     if (err) {
                         console.log(err)
                         res.status(500).json(err);
                     } else {
-                        res.status(200).json({stationExist: false});
+                        res.status(200).json({ stationExist: false });
                     }
                 })
             }
@@ -215,14 +217,14 @@ router.put('/railway/route', async (req, res) => {
 
 router.post('/railway/train', async (req, res) => {
 
-    const query = {name: req.body.name}
+    const query = { name: req.body.name }
     trainModel.find(query, (err, train) => {
         if (err) {
             console.log(err);
             res.status(500).json(err);
         } else {
             if (train.length != 0) {
-                res.status(200).json({trainExist: true});
+                res.status(200).json({ trainExist: true });
             } else {
                 let trains = new trainModel(req.body);
                 trains.save(err => {
@@ -230,7 +232,7 @@ router.post('/railway/train', async (req, res) => {
                         console.log(err);
                         res.status(500).json(err);
                     } else {
-                        res.status(200).json({trainExist: false});
+                        res.status(200).json({ trainExist: false });
                     }
                 });
 
@@ -243,26 +245,26 @@ router.post('/railway/train', async (req, res) => {
 
 router.delete('/railway/train', async (req, res) => {
 
-    const query = {name: req.body.name}
+    const query = { name: req.body.name }
     trainModel.deleteOne(query, (err) => {
         if (err) {
             console.log(err);
             res.status(500).json(err);
         } else {
-            res.status(200).json({status: true});
+            res.status(200).json({ status: true });
         }
     });
 });
 
 router.delete('/railway/route', async (req, res) => {
 
-    const query = {name: req.body.name}
+    const query = { name: req.body.name }
     routeModel.deleteOne(query, (err) => {
         if (err) {
             console.log(err);
             res.status(500).json(err);
         } else {
-            res.status(200).json({status: true});
+            res.status(200).json({ status: true });
         }
     });
 });
@@ -270,7 +272,7 @@ router.delete('/railway/route', async (req, res) => {
 router.post("/railway/reservations/monthly", (req, res) => {
 
     const yearMonth = req.body.year + "-" + req.body.month
-    const query = {"date": new RegExp(yearMonth, "i")}
+    const query = { "date": new RegExp(yearMonth, "i") }
     reservationModel.find(query, (err, reservation) => {
         if (err) {
             console.log(err);
@@ -283,7 +285,7 @@ router.post("/railway/reservations/monthly", (req, res) => {
 
 router.post("/railway/reservations/yearly", (req, res) => {
 
-    const query = {"date": new RegExp(req.body.year, "i")}
+    const query = { "date": new RegExp(req.body.year, "i") }
     reservationModel.find(query, (err, reservation) => {
         if (err) {
             console.log(err);
