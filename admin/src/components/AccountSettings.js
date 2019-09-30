@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Col, Button, Form, Card, Row } from 'react-bootstrap'
+import { Col, Button, Form, Card, Row, Modal } from 'react-bootstrap'
 import { updateAccount } from '../Services'
 import { toast } from 'react-toastify'
 import { getHash } from './commons/Functions'
@@ -16,7 +16,8 @@ class AccountSettings extends Component {
             phone: '',
             nic: '',
             email: '',
-            address: ''
+            address: '',
+            open: props.open
         }
         this.baseState = this.state
     }
@@ -99,81 +100,91 @@ class AccountSettings extends Component {
             });
     }
 
+    handleClose = () => {
+        this.setState({ open: false });
+    }
+
     render() {
-        return (
-            <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <Row style={{ width: '60%', padding: 10 }}>
-                    <Col>
-                        <Card style={{ padding: 20 }}>
-                            <Form onSubmit={e => this.handleSubmit(e)}>
-                                <Link>
-                                    <Card.Header onClick={() => this.setProOpen(!this.state.proOpen)}>
-                                        Change Profile
+        return (<Modal show={this.state.show} onHide={this.handleClose}>
+            <Modal.Header closeButton>
+                <Modal.Title>Update User</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <Row style={{ width: '60%', padding: 10 }}>
+                        <Col>
+                            <Card style={{ padding: 20 }}>
+                                <Form onSubmit={e => this.handleSubmit(e)}>
+                                    <Link>
+                                        <Card.Header onClick={() => this.setProOpen(!this.state.proOpen)}>
+                                            Change Profile
                                     </Card.Header>
-                                </Link>
-                                {this.state.proOpen &&
-                                    <div style={{ marginTop: 10 }}>
-                                        <Form.Row>
-                                            <Form.Group as={Col} controlId="formGridFName">
-                                                <Form.Label>First name</Form.Label>
-                                                <Form.Control required type="username" placeholder="Enter first name" onChange={this.handleChange('fname')} value={this.state.fname} />
-                                            </Form.Group>
+                                    </Link>
+                                    {this.state.proOpen &&
+                                        <div style={{ marginTop: 10 }}>
+                                            <Form.Row>
+                                                <Form.Group as={Col} controlId="formGridFName">
+                                                    <Form.Label>First name</Form.Label>
+                                                    <Form.Control required type="username" placeholder="Enter first name" onChange={this.handleChange('fname')} value={this.state.fname} />
+                                                </Form.Group>
 
-                                            <Form.Group as={Col} controlId="formGridLName">
-                                                <Form.Label>Last name</Form.Label>
-                                                <Form.Control required type="username" placeholder="Enter last name" onChange={this.handleChange('lname')} value={this.state.lname} />
+                                                <Form.Group as={Col} controlId="formGridLName">
+                                                    <Form.Label>Last name</Form.Label>
+                                                    <Form.Control required type="username" placeholder="Enter last name" onChange={this.handleChange('lname')} value={this.state.lname} />
+                                                </Form.Group>
+                                            </Form.Row>
+                                            <Form.Row>
+                                                <Form.Group as={Col} controlId="formGridPhone">
+                                                    <Form.Label>Phone</Form.Label>
+                                                    <Form.Control required type="username" placeholder="Enter Phone Number" onChange={this.handleChange('phone')} value={this.state.phone} />
+                                                </Form.Group>
+                                                <Form.Group as={Col} controlId="formGridNIC">
+                                                    <Form.Label>NIC</Form.Label>
+                                                    <Form.Control type="username" placeholder="Enter NIC" onChange={this.handleChange('nic')} value={this.state.nic} />
+                                                </Form.Group>
+                                            </Form.Row>
+                                            <Form.Group controlId="controlTextarea1">
+                                                <Form.Label>Address</Form.Label>
+                                                <Form.Control required as="textarea" rows="3" onChange={this.handleChange('address')} value={this.state.address} />
                                             </Form.Group>
-                                        </Form.Row>
-                                        <Form.Row>
-                                            <Form.Group as={Col} controlId="formGridPhone">
-                                                <Form.Label>Phone</Form.Label>
-                                                <Form.Control required type="username" placeholder="Enter Phone Number" onChange={this.handleChange('phone')} value={this.state.phone} />
+                                            <Form.Group controlId="formGridEmail">
+                                                <Form.Label>Email</Form.Label>
+                                                <Form.Control required type="email" placeholder="Enter email" onChange={this.handleChange('email')} value={this.state.email} disabled />
                                             </Form.Group>
-                                            <Form.Group as={Col} controlId="formGridNIC">
-                                                <Form.Label>NIC</Form.Label>
-                                                <Form.Control type="username" placeholder="Enter NIC" onChange={this.handleChange('nic')} value={this.state.nic} />
-                                            </Form.Group>
-                                        </Form.Row>
-                                        <Form.Group controlId="controlTextarea1">
-                                            <Form.Label>Address</Form.Label>
-                                            <Form.Control required as="textarea" rows="3" onChange={this.handleChange('address')} value={this.state.address} />
-                                        </Form.Group>
-                                        <Form.Group controlId="formGridEmail">
-                                            <Form.Label>Email</Form.Label>
-                                            <Form.Control required type="email" placeholder="Enter email" onChange={this.handleChange('email')} value={this.state.email} disabled />
-                                        </Form.Group>
-                                    </div>
-                                }
-                                <Link>
-                                    <Card.Header onClick={() => this.setOpen(!this.state.open)}>
-                                        Change Password
+                                        </div>
+                                    }
+                                    <Link>
+                                        <Card.Header onClick={() => this.setOpen(!this.state.open)}>
+                                            Change Password
                                     </Card.Header>
-                                </Link>
+                                    </Link>
 
-                                {this.state.open && <div style={{ padding: 10 }}>
-                                    <Form.Group controlId="formBasicOldPassword">
-                                        <Form.Label>Old Password</Form.Label>
-                                        <Form.Control required type="password" placeholder="Enter Current Password" onChange={this.handleChange('oldPassword')} />
-                                    </Form.Group>
-                                    <Form.Group controlId="formBasicNewPassword">
-                                        <Form.Label>New Password</Form.Label>
-                                        <Form.Control required type="password" placeholder="Enter New Password" onChange={this.handleChange('newPassword')} />
-                                    </Form.Group>
-                                    <Form.Group controlId="formBasicCPassword">
-                                        <Form.Label>Confirm Password</Form.Label>
-                                        <Form.Control required type="password" placeholder="Confirm Password" onChange={this.handleChange('cPassword')} />
-                                    </Form.Group>
-                                </div>}
-                                <Col style={{ paddingRight: 0, marginTop: 20 }} align='right'>
-                                    <Button variant="primary" type="submit">
-                                        Update account
+                                    {this.state.open && <div style={{ padding: 10 }}>
+                                        <Form.Group controlId="formBasicOldPassword">
+                                            <Form.Label>Old Password</Form.Label>
+                                            <Form.Control required type="password" placeholder="Enter Current Password" onChange={this.handleChange('oldPassword')} />
+                                        </Form.Group>
+                                        <Form.Group controlId="formBasicNewPassword">
+                                            <Form.Label>New Password</Form.Label>
+                                            <Form.Control required type="password" placeholder="Enter New Password" onChange={this.handleChange('newPassword')} />
+                                        </Form.Group>
+                                        <Form.Group controlId="formBasicCPassword">
+                                            <Form.Label>Confirm Password</Form.Label>
+                                            <Form.Control required type="password" placeholder="Confirm Password" onChange={this.handleChange('cPassword')} />
+                                        </Form.Group>
+                                    </div>}
+                                    <Col style={{ paddingRight: 0, marginTop: 20 }} align='right'>
+                                        <Button variant="primary" type="submit">
+                                            Update account
                                     </Button>
-                                </Col>
-                            </Form>
-                        </Card>
-                    </Col>
+                                    </Col>
+                                </Form>
+                            </Card>
+                        </Col>
+                    </Row>
                 </Row>
-            </Row>
+            </Modal.Body>
+        </Modal>
         )
     }
 }
