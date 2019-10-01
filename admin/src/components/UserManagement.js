@@ -1,8 +1,10 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 
-import {Button, Form, Col, Row, Table} from 'react-bootstrap'
+import { Button, Form, Col, Row, Table, Modal } from 'react-bootstrap'
 import { toast } from 'react-toastify'
-import {updateUser, users, deleteUser} from "../Services";
+import { updateUser, users, deleteUser } from "../Services";
+
+import AccountSettings from './AccountSettings';
 
 class UserManagement extends Component {
 
@@ -11,6 +13,7 @@ class UserManagement extends Component {
         this.state = {
             data: [],
             showErr: false
+
         };
         this.baseState = this.state
     }
@@ -31,6 +34,10 @@ class UserManagement extends Component {
         })
     };
 
+    updateEntry(email) {
+        return <AccountSettings open="true" />
+    }
+    
     deleteEntry(email) {
         deleteUser(email).then(res => {
             toast.success("User Successfully Deleted");
@@ -41,12 +48,12 @@ class UserManagement extends Component {
     }
 
     disableUser(user) {
-        updateUser({...user, enabled : !user.enabled}, user._id)
+        updateUser({ ...user, enabled: !user.enabled }, user._id)
             .then(res => {
-                if(user.enabled) {
-                    toast.success("User "+user.fname +" is disabled.");
+                if (user.enabled) {
+                    toast.success("User " + user.fname + " is disabled.");
                 } else {
-                    toast.success("User "+user.fname +" is enabled.");
+                    toast.success("User " + user.fname + " is enabled.");
                 }
                 this.getAllUsers();
             })
@@ -57,9 +64,9 @@ class UserManagement extends Component {
 
     render() {
         return (
-            <Form style={{padding: 20}} onSubmit={(e) => this.handleSubmit(e)}>
-                <Row style={{alignItems: 'center', justifyContent: 'center'}}>
-                    <Form.Row style={{width: '75%', paddingLeft: 5, align: 'right'}}>
+            <Form style={{ padding: 20 }} onSubmit={(e) => this.handleSubmit(e)}>
+                <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
+                    <Form.Row style={{ width: '75%', paddingLeft: 5, align: 'right' }}>
                         <Table striped size="sm">
                             <thead>
                                 <tr>
@@ -72,31 +79,31 @@ class UserManagement extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                            {this.state.data.map((user) => {
-                                return <tr key={user.email}>
-                                    <td>{user.fname}</td>
-                                    <td>{user.lname}</td>
-                                    <td>{user.nic}</td>
-                                    <td>{user.phone}</td>
-                                    <td>{user.email}</td>
-                                    <td>{user.address}</td>
-                                    <td>
-                                        <Button variant="warning" type="button" onClick={() => this.disableUser(user)}>
-                                            {(user.enabled) ? "Disable" : "Enable"}
+                                {this.state.data.map((user) => {
+                                    return <tr key={user.email}>
+                                        <td>{user.fname}</td>
+                                        <td>{user.lname}</td>
+                                        <td>{user.nic}</td>
+                                        <td>{user.phone}</td>
+                                        <td>{user.email}</td>
+                                        <td>{user.address}</td>
+                                        <td>
+                                            <Button variant="warning" type="button" onClick={() => this.disableUser(user)}>
+                                                {(user.enabled) ? "Disable" : "Enable"}
+                                            </Button>
+                                        </td>
+                                        <td>
+                                            <Button variant="info" type="button" onClick={() => this.deleteEntry(user.email)}>
+                                                Edit
                                         </Button>
-                                    </td>
-                                    <td>
-                                        <Button variant="info" type="button" onClick={() => this.deleteEntry(user.email)}>
-                                            Edit
+                                        </td>
+                                        <td>
+                                            <Button variant="danger" type="button" onClick={() => this.deleteEntry(user.email)}>
+                                                Remove
                                         </Button>
-                                    </td>
-                                    <td>
-                                        <Button variant="danger" type="button" onClick={() => this.deleteEntry(user.email)}>
-                                            Remove
-                                        </Button>
-                                    </td>
-                                </tr>
-                            })}
+                                        </td>
+                                    </tr>
+                                })}
                             </tbody>
                         </Table>
                     </Form.Row>

@@ -14,7 +14,7 @@
         "authToken": "052280b19a2cac121c45e9924cd987a0",
         "phoneNo": "+12018222051"
     },
-    "backendUrl" : "http://192.168.8.106:3001",
-    "frontendUrl" : "http://192.168.8.106:3000",
+    "backendUrl" : "http://localhost:3001",
+    "frontendUrl" : "http://localhost:3000",
     "frontendAdminUrl" : "http://192.168.8.106:3002"
 }

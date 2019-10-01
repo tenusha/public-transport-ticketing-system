@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Table, Row, Form, Col, Button } from 'react-bootstrap'
+import { Table, Row, Form, Col, Button, Alert } from 'react-bootstrap'
 import { validateCard, validatePhone, makeReservation } from '../Services'
 import { toast } from 'react-toastify'
 
@@ -9,7 +9,7 @@ class Payment extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            checked: 'card',
+            checked: 'cash',
             errMsg: 'Please fill all the fields!!!',
             showPaymentErr: false,
             validateErrMsg: 'Entered data not valid!!!',
@@ -42,7 +42,7 @@ class Payment extends Component {
     handleChange = type => event => {
         var value = event.target.value
         if (type === 'card' || type === 'cash') {
-            this.setState({ checked: type })
+            this.setState({ checked: type, showPaymentErr : false, showValidateErr : false })
         } else {
             this.setState({ [type]: value })
         }
@@ -141,34 +141,34 @@ class Payment extends Component {
                         <Col>
                             <Form.Check
                                 type="radio"
-                                label="Credit Card"
-                                name="formHorizontalRadios"
-                                id="formHorizontalRadios1"
-                                defaultChecked
-                                onChange={this.handleChange('card')}
-                            />
-                            <Form.Check
-                                type="radio"
                                 label="Cash"
                                 name="formHorizontalRadios"
                                 id="formHorizontalRadios2"
+                                defaultChecked
                                 onChange={this.handleChange('cash')}
+                            />
+                            <Form.Check
+                                type="radio"
+                                label="Credit Card"
+                                name="formHorizontalRadios"
+                                id="formHorizontalRadios1"
+                                onChange={this.handleChange('card')}
                             />
                         </Col>
                     </Form.Row>
-                    {this.state.checked === 'card' &&
+                    {this.state.checked === 'card' && 
                         <Form.Row style={{ width: '75%' }}>
                             <Form.Group as={Col} controlId="cardNo">
                                 <Form.Label>Card Number</Form.Label>
-                                <Form.Control placeholder="card number" onChange={this.handleChange('cardNo')} value={this.state.cardNo} />
+                                <Form.Control required placeholder="card number" onChange={this.handleChange('cardNo')} value={this.state.cardNo} />
                             </Form.Group>
                             <Form.Group as={Col} controlId="cvc">
                                 <Form.Label>CVC Number</Form.Label>
-                                <Form.Control placeholder="CVC" onChange={this.handleChange('cvc')} value={this.state.cvc} />
+                                <Form.Control required placeholder="CVC" onChange={this.handleChange('cvc')} value={this.state.cvc} />
                             </Form.Group>
                             <Form.Group as={Col} controlId="exp">
-                                <Form.Label>Exp date</Form.Label>
-                                <Form.Control placeholder="dd/mm" onChange={this.handleChange('exp')} value={this.state.exp} />
+                                <Form.Label>Exp Date</Form.Label>
+                                <Form.Control required placeholder="dd/mm" onChange={this.handleChange('exp')} value={this.state.exp} />
                             </Form.Group>
                         </Form.Row>
                     }
@@ -176,8 +176,8 @@ class Payment extends Component {
                         <div />
                     }
                     <Form.Row style={{ width: '75%' }}>
-                        {this.state.showPaymentErr && <p style={{ color: 'red' }}>{this.state.errMsg}</p>}
-                        {this.state.showValidateErr && <p style={{ color: 'red' }}>{this.state.validateErrMsg}</p>}
+                        {this.state.showPaymentErr && <Alert variant={'danger'}>{this.state.errMsg}</Alert>}
+                        {this.state.showValidateErr && <Alert variant={'danger'}>{this.state.validateErrMsg}</Alert>}
                     </Form.Row>
                     <Form.Row style={{ width: '75%' }}>
                         <Button variant="primary" type="submit">
