@@ -10,9 +10,9 @@
         }
     },
     "messageClient": {
-        "accountSid": "AC86b7448c3ed5e78b18f44d5e84fbdcb1",
-        "authToken": "fee993da9d4cafa918929607a8b37827",
-        "phoneNo": "+18504040553"
+        "accountSid": "AC21d0577f1271ab6792040391c7b0c784",
+        "authToken": "052280b19a2cac121c45e9924cd987a0",
+        "phoneNo": "+12018222051"
     },
     "backendUrl" : "http://localhost:3001",
     "frontendUrl" : "http://localhost:3000",

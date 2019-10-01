@@ -1,7 +1,7 @@
 import React from "react";
 import {Pie} from "react-chartjs-2";
 import {MDBContainer} from "mdbreact";
-import {Row} from "reactstrap";
+import {Row, Jumbotron} from "reactstrap";
 
 class PieChart extends React.Component {
     state = {
@@ -42,8 +42,18 @@ class PieChart extends React.Component {
                 }}>
                     <h4>Pie&nbsp;Chart&nbsp;View</h4>
                 </Row>
-                <Pie style={{marginBottom: "10%"}} data={this.state.dataPie} options={{responsive: true}}/>
-
+                {this.props.location.state.res.data.length === 0 ?
+                    <div>
+                        <Jumbotron>
+                            <h1>No Records Found</h1>
+                            <hr className="my-2"/>
+                            <p className="lead">* No Records Exists for the Entered Time Period.</p>
+                            <p className="lead">* Enter a valid Time Period.</p>
+                        </Jumbotron>
+                    </div>
+                    :
+                    <Pie style={{marginBottom: "10%"}} data={this.state.dataPie} options={{responsive: true}}/>
+                }
             </MDBContainer>
         );
     }
