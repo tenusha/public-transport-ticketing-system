@@ -1,7 +1,7 @@
 import React from "react";
-import {Bar} from "react-chartjs-2";
+import {Bar, Pie} from "react-chartjs-2";
 import {MDBContainer} from "mdbreact";
-import {Row} from "reactstrap";
+import {Jumbotron, Row} from "reactstrap";
 
 class BarChart extends React.Component {
     state = {
@@ -73,7 +73,18 @@ class BarChart extends React.Component {
                 }}>
                     <h4>Bar&nbsp;Chart&nbsp;View</h4>
                 </Row>
-                <Bar data={this.state.dataBar} options={this.state.barChartOptions}/>
+                {this.props.location.state.res.data.length === 0 ?
+                    <div>
+                        <Jumbotron>
+                            <h1>No Records Found</h1>
+                            <hr className="my-2"/>
+                            <p className="lead">* No Records Exists for the Entered Time Period.</p>
+                            <p className="lead">* Enter a valid Time Period.</p>
+                        </Jumbotron>
+                    </div>
+                    :
+                    <Bar data={this.state.dataBar} options={this.state.barChartOptions}/>
+                }
 
             </MDBContainer>
         );
