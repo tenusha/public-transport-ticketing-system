@@ -4,6 +4,7 @@ import { Row, Col, Button, Card, Pagination } from 'react-bootstrap'
 import { getReservations, deleteReservation } from '../Services'
 import { toast } from 'react-toastify'
 import configs from '../config.json'
+import * as PropTypes from "prop-types";
 
 var QRCode = require('qrcode.react')
 
@@ -98,7 +99,7 @@ class Reservations extends Component {
                                         </Row>
                                         <Row>
                                             <Col>Quantity : {reservation.qty}</Col>
-                                        </Row>										
+                                        </Row>
                                     </Col>
                                     <Col align='right'><QRCode value={url} /></Col>
                                 </Row>
@@ -106,8 +107,8 @@ class Reservations extends Component {
 								<Row>
                                     <Col>Payment Method : <b>{reservation.paymentMethod}</b></Col>
                                 </Row>
-                                <Row>								
-								<br/>										
+                                <Row>
+								<br/>
                                     <Col>Amount : {reservation.amount.toFixed(2)}</Col>
                                     <Col>Discount : {reservation.discount.toFixed(2)}</Col>
                                     <Col align='right'><b>Total :</b> {reservation.total.toFixed(2)}</Col>
@@ -142,38 +143,30 @@ class Reservations extends Component {
 
     render() {
         return (
-            <Row style={{ alignItems: 'center', justifyContent: 'center', width: '100%' }}>
-                {this.state.reservations.length <= 0 &&
-                    <Row style={{ width: '75%', padding: 10 }}>
-                        <Col>
-                            <Card>
-                                <Card.Body>You don't have any reservations yet!!!</Card.Body>
-                            </Card>
-                        </Col>
-                    </Row>
-                }
+            <Row style={{alignItems: 'center', justifyContent: 'center', width: '100%'}}>
+                <ReservationList reservations={this.state.reservations}/>
                 {this.state.reservations.length > 0 &&
-                    <>
-                        <Row style={{ width: '75%', paddingTop: 20, paddingLeft: 15 }}>
-                            <Pagination>
-                                <Pagination.First onClick={() => this.pageChange(1)} />
-                                {this.state.paginateItems}
-                                <Pagination.Last onClick={() => this.pageChange(this.state.lastPage)} />
-                            </Pagination>
-                        </Row>
-                        {this.state.items.map((reservation, i) => {
-                            return (
-                                reservation
-                            )
-                        })}
-                        <Row style={{ width: '75%', paddingTop: 20, paddingLeft: 15 }}>
-                            <Pagination>
-                                <Pagination.First onClick={() => this.pageChange(1)} />
-                                {this.state.paginateItems}
-                                <Pagination.Last onClick={() => this.pageChange(this.state.lastPage)} />
-                            </Pagination>
-                        </Row>
-                    </>
+                <>
+                    <Row style={{width: '75%', paddingTop: 20, paddingLeft: 15}}>
+                        <Pagination>
+                            <Pagination.First onClick={() => this.pageChange(1)}/>
+                            {this.state.paginateItems}
+                            <Pagination.Last onClick={() => this.pageChange(this.state.lastPage)}/>
+                        </Pagination>
+                    </Row>
+                    {this.state.items.map((reservation, i) => {
+                        return (
+                            reservation
+                        )
+                    })}
+                    <Row style={{width: '75%', paddingTop: 20, paddingLeft: 15}}>
+                        <Pagination>
+                            <Pagination.First onClick={() => this.pageChange(1)}/>
+                            {this.state.paginateItems}
+                            <Pagination.Last onClick={() => this.pageChange(this.state.lastPage)}/>
+                        </Pagination>
+                    </Row>
+                </>
                 }
             </Row>
         );
@@ -181,3 +174,19 @@ class Reservations extends Component {
 }
 
 export default Reservations;
+
+function ReservationList(props) {
+    return <>
+        {props.reservations.length <= 0 &&
+        <Row style={{width: "75%", padding: 10}}>
+            <Col>
+                <Card>
+                    <Card.Body>You don't have any reservations yet!!!</Card.Body>
+                </Card>
+            </Col>
+        </Row>
+        }
+    </>;
+}
+
+ReservationList.propTypes = {reservations: PropTypes.any};
