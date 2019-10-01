@@ -34,4 +34,13 @@ router.delete('/users/:id', async (req, res) => {
     }
 });
 
+router.get('/users/:id', async (req, res) => {
+    try {
+        const result = await UserModel.findOne({ email: req.params.id }).exec();
+        res.status(200).json(result)
+    } catch (err) {
+        res.status(500).json(err)
+    }
+});
+
 module.exports = router
