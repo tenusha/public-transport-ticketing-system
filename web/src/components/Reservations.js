@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
-import { Row, Col, Button, Card, Pagination } from 'react-bootstrap'
-import { getReservations, deleteReservation } from '../Services'
-import { toast } from 'react-toastify'
+import {Row, Col, Button, Card, Pagination} from 'react-bootstrap'
+import {getReservations, deleteReservation} from '../Services'
+import {toast} from 'react-toastify'
 import configs from '../config.json'
 import * as PropTypes from "prop-types";
 
@@ -40,7 +40,7 @@ class Reservations extends Component {
             user = JSON.parse(user)
             getReservations(user._id)
                 .then(res => {
-                    this.setState({ reservations: res.reverse() }, () => this.paginateReservations())
+                    this.setState({reservations: res.reverse()}, () => this.paginateReservations())
                 })
                 .catch(err => {
                     console.log(err)
@@ -62,6 +62,38 @@ class Reservations extends Component {
         }
     }
 
+    render() {
+        const PaginatedReservations = this.getPagination(this.state.paginateItems)
+        return (
+            <Row style={{alignItems: 'center', justifyContent: 'center', width: '100%'}}>
+                <ReservationList reservations={this.state.reservations}/>
+                {this.state.reservations.length > 0 &&
+                <>
+                    <Row style={{width: '75%', paddingTop: 20, paddingLeft: 15}}>
+                        {PaginatedReservations}
+                    </Row>
+                    {this.state.items.map((reservation, i) => {
+                        return (
+                            reservation
+                        )
+                    })}
+                    <Row style={{width: '75%', paddingTop: 20, paddingLeft: 15}}>
+                        {PaginatedReservations}
+                    </Row>
+                </>
+                }
+            </Row>
+        );
+    }
+
+    getPagination(paginateItems) {
+        return <Pagination>
+            <Pagination.First onClick={() => this.pageChange(1)}/>
+            {paginateItems}
+            <Pagination.Last onClick={() => this.pageChange(this.state.lastPage)}/>
+        </Pagination>;
+    }
+
     paginateReservations = () => {
         let items = [];
         const offset = (this.state.offset - 1) * 5
@@ -78,14 +110,14 @@ class Reservations extends Component {
                 const url = configs.frontendURL + "/ticket/" + reservation._id
 
                 items.push(
-                    <Row style={{ width: '75%' }} key={number}>
+                    <Row style={{width: '75%'}} key={number}>
                         <Col>
-                            <Card style={{ padding: 10, marginTop: 10 }}>
+                            <Card style={{padding: 10, marginTop: 10}}>
                                 <Row>
                                     <Col>Reference No : {reservation._id}</Col>
                                     <Col align='right'>{reservation.date} {reservation.time}</Col>
                                 </Row>
-                                <hr />
+                                <hr/>
                                 <Row>
                                     <Col>
                                         <Row>
@@ -101,21 +133,22 @@ class Reservations extends Component {
                                             <Col>Quantity : {reservation.qty}</Col>
                                         </Row>
                                     </Col>
-                                    <Col align='right'><QRCode value={url} /></Col>
+                                    <Col align='right'><QRCode value={url}/></Col>
                                 </Row>
-                                <hr />
-								<Row>
+                                <hr/>
+                                <Row>
                                     <Col>Payment Method : <b>{reservation.paymentMethod}</b></Col>
                                 </Row>
                                 <Row>
-								<br/>
+                                    <br/>
                                     <Col>Amount : {reservation.amount.toFixed(2)}</Col>
                                     <Col>Discount : {reservation.discount.toFixed(2)}</Col>
                                     <Col align='right'><b>Total :</b> {reservation.total.toFixed(2)}</Col>
                                 </Row>
                                 <Row>
-                                    <Col style={{ paddingTop: 10 }} align='right'>
-                                        <Button disabled={disabled} variant="danger" size="sm" onClick={() => this.cancelReservation(reservation._id)}>Cancel</Button>
+                                    <Col style={{paddingTop: 10}} align='right'>
+                                        <Button disabled={disabled} variant="danger" size="sm"
+                                                onClick={() => this.cancelReservation(reservation._id)}>Cancel</Button>
                                     </Col>
                                 </Row>
                             </Card>
@@ -128,49 +161,20 @@ class Reservations extends Component {
         const lastPage = Math.ceil(this.state.reservations.length / 5)
         for (let number = 1; number <= lastPage; number++) {
             paginateItems.push(
-                <Pagination.Item key={number} active={number === this.state.offset} onClick={() => this.pageChange(number)}>
+                <Pagination.Item key={number} active={number === this.state.offset}
+                                 onClick={() => this.pageChange(number)}>
                     {number}
                 </Pagination.Item>,
             );
         }
-        this.setState({ paginateItems: paginateItems, items: items, lastPage: lastPage })
+        this.setState({paginateItems: paginateItems, items: items, lastPage: lastPage})
     }
 
     pageChange = n => {
         console.log(n)
-        this.setState({ offset: n }, () => this.paginateReservations())
+        this.setState({offset: n}, () => this.paginateReservations())
     }
 
-    render() {
-        return (
-            <Row style={{alignItems: 'center', justifyContent: 'center', width: '100%'}}>
-                <ReservationList reservations={this.state.reservations}/>
-                {this.state.reservations.length > 0 &&
-                <>
-                    <Row style={{width: '75%', paddingTop: 20, paddingLeft: 15}}>
-                        <Pagination>
-                            <Pagination.First onClick={() => this.pageChange(1)}/>
-                            {this.state.paginateItems}
-                            <Pagination.Last onClick={() => this.pageChange(this.state.lastPage)}/>
-                        </Pagination>
-                    </Row>
-                    {this.state.items.map((reservation, i) => {
-                        return (
-                            reservation
-                        )
-                    })}
-                    <Row style={{width: '75%', paddingTop: 20, paddingLeft: 15}}>
-                        <Pagination>
-                            <Pagination.First onClick={() => this.pageChange(1)}/>
-                            {this.state.paginateItems}
-                            <Pagination.Last onClick={() => this.pageChange(this.state.lastPage)}/>
-                        </Pagination>
-                    </Row>
-                </>
-                }
-            </Row>
-        );
-    }
 }
 
 export default Reservations;
