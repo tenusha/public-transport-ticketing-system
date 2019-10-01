@@ -18,6 +18,10 @@ export function users() {
     return callGet(baseUrl + '/users');
 }
 
+export function getUser(email) {
+    return callGet(baseUrl + '/users/' + email);
+}
+
 export function deleteUser(id) {
     return callDelete(baseUrl + '/users/' + id);
 }
@@ -28,6 +32,10 @@ export function deleteAdmin(id) {
 
 export function updateAccount(body, id) {
     return callPut(baseUrl + '/admin/' + id, body)
+}
+
+export function updateUserAccount(body, id) {
+    return callPut(baseUrl + '/users/' + id, body)
 }
 
 export function updateUser(body, id) {

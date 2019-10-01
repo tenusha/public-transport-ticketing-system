@@ -4,7 +4,7 @@ import { Button, Form, Col, Row, Table, Modal } from 'react-bootstrap'
 import { toast } from 'react-toastify'
 import { updateUser, users, deleteUser } from "../Services";
 
-import AccountSettings from './AccountSettings';
+import UserAccountSettings from './UserAccountSettings';
 
 class UserManagement extends Component {
 
@@ -12,14 +12,15 @@ class UserManagement extends Component {
         super(props, context);
         this.state = {
             data: [],
-            showErr: false
-
+            showErr: false,
+            open: false
         };
         this.baseState = this.state
     }
 
     componentDidMount() {
         this.getAllUsers();
+        this.handleModalClose();
     }
 
     componentWillUnmount() {
@@ -34,10 +35,14 @@ class UserManagement extends Component {
         })
     };
 
-    updateEntry(email) {
-        return <AccountSettings open="true" />
+    handleModalClose = () => {
+        this.setState({ open: false })
     }
-    
+
+    updateEntry = email => {
+        this.setState({ email, open: true })
+    }
+
     deleteEntry(email) {
         deleteUser(email).then(res => {
             toast.success("User Successfully Deleted");
@@ -93,7 +98,7 @@ class UserManagement extends Component {
                                             </Button>
                                         </td>
                                         <td>
-                                            <Button variant="info" type="button" onClick={() => this.deleteEntry(user.email)}>
+                                            <Button variant="info" type="button" onClick={() => this.updateEntry(user.email)}>
                                                 Edit
                                         </Button>
                                         </td>
@@ -108,6 +113,9 @@ class UserManagement extends Component {
                         </Table>
                     </Form.Row>
                 </Row>
+                {this.state.open &&
+                    <UserAccountSettings open={this.state.open} handleClose={this.handleModalClose} email={this.state.email} />
+                }
             </Form>
         );
     }
