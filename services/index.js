@@ -9,6 +9,7 @@ const payment = require('./routers/payment')
 const gov = require('./routers/gov')
 const user = require('./routers/user')
 const contact = require('./routers/contact')
+const admin = require('./routers/admin')
 const mongoose = require('mongoose')
 
 mongoose.connect(config.mongoDB, { useNewUrlParser: true }, function (err) {
@@ -16,6 +17,7 @@ mongoose.connect(config.mongoDB, { useNewUrlParser: true }, function (err) {
     console.log('mongo db connected')
 }).catch(err => console.log(err))
 
+app.use(express.static('images'))
 app.use(express.json());
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -31,6 +33,7 @@ app.use(payment)
 app.use(gov)
 app.use(user)
 app.use(contact)
+app.use(admin)
 
 app.listen(3001, err => {
     if (err) {

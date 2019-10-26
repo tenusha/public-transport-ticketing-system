@@ -31,6 +31,17 @@ const userSchema = mongoose.Schema({
     discount: {
         type: Boolean,
         required: true
+    },
+    enabled : {
+        type: Boolean,
+        required: true
+    },
+    loginCount : {
+        type: Number,
+        default: 0
+    },
+    googleId: {
+        type : String
     }
 })
 

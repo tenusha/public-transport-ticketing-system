@@ -6,12 +6,15 @@
         "email": "sl.railway.e.ticketing@gmail.com",
         "auth": {
             "user": "sl.railway.e.ticketing@gmail.com",
-            "pass": "railway@123"
+            "pass": "*******"
         }
     },
     "messageClient": {
-        "accountSid": "AC86b7448c3ed5e78b18f44d5e84fbdcb1",
-        "authToken": "fee993da9d4cafa918929607a8b37827",
-        "phoneNo": "+18504040553"
-    }
+        "accountSid": "AC21d0577f13213c7bfr4537b0c784",
+        "authToken": "052213213c121c45e9924cd987a0",
+        "phoneNo": "+12018222051"
+    },
+    "backendUrl" : "http://localhost:3001",
+    "frontendUrl" : "http://localhost:3000",
+    "frontendAdminUrl" : "http://localhost:3002"
 }

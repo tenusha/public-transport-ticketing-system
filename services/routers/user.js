@@ -16,4 +16,31 @@ router.put('/users/:id', async (req, res) => {
     }
 });
 
+router.get('/users', async (req, res) => {
+    try {
+        var userList = await UserModel.find();
+        res.status(200).json(userList)
+    } catch (err) {
+        res.status(500).json(err)
+    }
+})
+
+router.delete('/users/:id', async (req, res) => {
+    try {
+        const result = await UserModel.deleteOne({ email: req.params.id }).exec();
+        res.status(200).json(result)
+    } catch (err) {
+        res.status(500).json(err)
+    }
+});
+
+router.get('/users/:id', async (req, res) => {
+    try {
+        const result = await UserModel.findOne({ email: req.params.id }).exec();
+        res.status(200).json(result)
+    } catch (err) {
+        res.status(500).json(err)
+    }
+});
+
 module.exports = router

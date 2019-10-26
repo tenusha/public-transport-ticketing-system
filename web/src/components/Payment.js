@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-import { Table, Row, Form, Col, Button } from 'react-bootstrap'
+import { Table, Row, Form, Col, Button, Alert } from 'react-bootstrap'
 import { validateCard, validatePhone, makeReservation } from '../Services'
 import { toast } from 'react-toastify'
 
@@ -9,7 +9,7 @@ class Payment extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            checked: 'card',
+            checked: 'cash',
             errMsg: 'Please fill all the fields!!!',
             showPaymentErr: false,
             validateErrMsg: 'Entered data not valid!!!',
@@ -41,8 +41,8 @@ class Payment extends Component {
 
     handleChange = type => event => {
         var value = event.target.value
-        if (type === 'card' || type === 'phone') {
-            this.setState({ checked: type })
+        if (type === 'card' || type === 'cash') {
+            this.setState({ checked: type, showPaymentErr : false, showValidateErr : false })
         } else {
             this.setState({ [type]: value })
         }
@@ -58,7 +58,7 @@ class Payment extends Component {
                 validateCard({ card: state.cardNo, cvc: state.cvc, exp: state.exp, total: state.total })
                     .then(res => {
                         if (res.validated) {
-                            this.createReservation({ card: state.cardNo })
+                            this.createReservation({ card: state.cardNo, phone: state.phoneNo })
                         } else {
                             this.setState({ showValidateErr: true })
                         }
@@ -71,22 +71,8 @@ class Payment extends Component {
                 this.setState({ showPaymentErr: true })
             }
         }
-        if (state.checked === 'phone') {
-            if (state.phoneNo && state.pin) {
-                validatePhone({ phone: state.phoneNo, pin: state.pin, total: state.total })
-                    .then(res => {
-                        if (res.validated) {
-                            this.createReservation({ phone: state.phoneNo })
-                        } else {
-                            this.setState({ showValidateErr: true })
-                        }
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
-            } else {
-                this.setState({ showPaymentErr: true })
-            }
+        if (state.checked === 'cash') {
+            this.createReservation({ phone: state.phoneNo })
         }
     }
 
@@ -108,7 +94,8 @@ class Payment extends Component {
                 date: state.date,
                 amount: state.amount,
                 discount: state.discount,
-                total: state.total
+                total: state.total,
+                paymentMethod: state.checked
             }
             makeReservation(reservation)
                 .then(res => {
@@ -123,6 +110,7 @@ class Payment extends Component {
     }
 
     render() {
+        console.log(this.state.checked)
         return (
             <Form style={{ padding: 20 }} onSubmit={(e) => this.handleSubmit(e)}>
                 <Row style={{ alignItems: 'center', justifyContent: 'center' }}>
@@ -153,56 +141,47 @@ class Payment extends Component {
                         <Col>
                             <Form.Check
                                 type="radio"
-                                label="Credit Card"
+                                label="Cash"
                                 name="formHorizontalRadios"
-                                id="formHorizontalRadios1"
+                                id="formHorizontalRadios2"
                                 defaultChecked
-                                onChange={this.handleChange('card')}
+                                onChange={this.handleChange('cash')}
                             />
                             <Form.Check
                                 type="radio"
-                                label="Mobile Number"
+                                label="Credit Card"
                                 name="formHorizontalRadios"
-                                id="formHorizontalRadios2"
-                                onChange={this.handleChange('phone')}
+                                id="formHorizontalRadios1"
+                                onChange={this.handleChange('card')}
                             />
                         </Col>
                     </Form.Row>
-                    {this.state.checked === 'card' &&
+                    {this.state.checked === 'card' && 
                         <Form.Row style={{ width: '75%' }}>
                             <Form.Group as={Col} controlId="cardNo">
                                 <Form.Label>Card Number</Form.Label>
-                                <Form.Control placeholder="card number" onChange={this.handleChange('cardNo')} value={this.state.cardNo} />
+                                <Form.Control required placeholder="card number" onChange={this.handleChange('cardNo')} value={this.state.cardNo} />
                             </Form.Group>
                             <Form.Group as={Col} controlId="cvc">
                                 <Form.Label>CVC Number</Form.Label>
-                                <Form.Control placeholder="CVC" onChange={this.handleChange('cvc')} value={this.state.cvc} />
+                                <Form.Control required placeholder="CVC" onChange={this.handleChange('cvc')} value={this.state.cvc} />
                             </Form.Group>
                             <Form.Group as={Col} controlId="exp">
-                                <Form.Label>Exp date</Form.Label>
-                                <Form.Control placeholder="dd/mm" onChange={this.handleChange('exp')} value={this.state.exp} />
+                                <Form.Label>Exp Date</Form.Label>
+                                <Form.Control required placeholder="dd/mm" onChange={this.handleChange('exp')} value={this.state.exp} />
                             </Form.Group>
                         </Form.Row>
                     }
-                    {this.state.checked === 'phone' &&
-                        <Form.Row style={{ width: '75%' }}>
-                            <Form.Group as={Col} controlId="phoneNo">
-                                <Form.Label>Phone Number</Form.Label>
-                                <Form.Control placeholder="Phone number" onChange={this.handleChange('phoneNo')} value={this.state.phoneNo} />
-                            </Form.Group>
-                            <Form.Group as={Col} controlId="pin">
-                                <Form.Label>PIN</Form.Label>
-                                <Form.Control placeholder="PIN" onChange={this.handleChange('pin')} value={this.state.pin} />
-                            </Form.Group>
-                        </Form.Row>
+                    {this.state.checked === 'cash' &&
+                        <div />
                     }
                     <Form.Row style={{ width: '75%' }}>
-                        {this.state.showPaymentErr && <p style={{ color: 'red' }}>{this.state.errMsg}</p>}
-                        {this.state.showValidateErr && <p style={{ color: 'red' }}>{this.state.validateErrMsg}</p>}
+                        {this.state.showPaymentErr && <Alert variant={'danger'}>{this.state.errMsg}</Alert>}
+                        {this.state.showValidateErr && <Alert variant={'danger'}>{this.state.validateErrMsg}</Alert>}
                     </Form.Row>
                     <Form.Row style={{ width: '75%' }}>
                         <Button variant="primary" type="submit">
-                            Make Payment
+                            {this.state.checked === "card" ? "Make Payment" : "Make Reservation"}
                         </Button>
                     </Form.Row>
                 </Row>
