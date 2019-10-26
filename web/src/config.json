@@ -1,4 +1,4 @@
 {
-    "baseUrl": "http://192.168.8.102:3001",
-    "frontendURL" : "http://192.168.8.102:3000"
+    "baseUrl": "http://localhost:3001",
+    "frontendURL" : "http://localhost:3000"
 }
